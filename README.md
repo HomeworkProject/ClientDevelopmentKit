@@ -1,5 +1,8 @@
+[logo]:https://github.com/MarkL4YG/Homework_Server_CDK/blob/bleeding/src/main/resources/experimental_logo.png
+
 # HWServer CDK
 
+![alt text][logo]
 
 ## Description
 This is the <b>C</b>lient<b>D</b>evelopment<b>K</b>it for the [Homework_Server](https://github.com/MarKL4YG/Homework_Server).  
