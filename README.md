@@ -2,7 +2,7 @@
 
 
 ## Description
-This is the __C__lient__D__evelopment__K__it for the [Homework_Server](https://github.com/MarKL4YG/Homework_Server).  
+This is the <b>C</b>lient<b>D</b>evelopment<b>K</b>it for the [Homework_Server](https://github.com/MarKL4YG/Homework_Server).  
 
 Its purpose is to provide a client API for software that needs to communicate with the server.  
 
