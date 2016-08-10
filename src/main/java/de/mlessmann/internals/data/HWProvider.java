@@ -1,18 +1,18 @@
-package de.mlessmann.hw.providers;
+package de.mlessmann.internals.data;
 
 import com.sun.istack.internal.NotNull;
-import de.mlessmann.annotations.API;
 
+import de.mlessmann.api.data.IHWProvider;
+import de.mlessmann.api.main.HWMgr;
 import org.json.JSONObject;
 
 /**
  * Created by Life4YourGames on 08.08.16.
  *
  * Used to provide information about a HWServer host.
- * @see de.mlessmann.hw.HWMgr#getProviders()
+ * @see HWMgr#getAvailableProviders(String)
  */
-@API(APILevel = 1)
-public class HWProvider {
+public class HWProvider implements IHWProvider {
 
     private JSONObject json;
 
@@ -22,7 +22,6 @@ public class HWProvider {
 
     }
 
-    @API(APILevel = 2)
     public boolean isValid() {
 
         try {
@@ -75,14 +74,12 @@ public class HWProvider {
 
     }
 
-    @API(APILevel = 2)
     public boolean isTCPPlaintextEnabled() {
 
         return json.getJSONObject("optional").optBoolean("tcp_plaintext_enabled", true);
 
     }
 
-    @API(APILevel = 2)
     public boolean isTCPSecureEnabled() {
 
         //As the hwServer currently lacks native encryption support, this defaults to false;
@@ -90,7 +87,6 @@ public class HWProvider {
 
     }
 
-    @API(APILevel = 2)
     public JSONObject getOptions() {
 
         return json.getJSONObject("optional");

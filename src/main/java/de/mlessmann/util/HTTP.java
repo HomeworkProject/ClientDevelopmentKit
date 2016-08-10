@@ -1,4 +1,4 @@
-package de.mlessmann.networking;
+package de.mlessmann.util;
 
 import com.sun.istack.internal.Nullable;
 

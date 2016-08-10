@@ -1,11 +1,14 @@
-package de.mlessmann.networking.requests.results;
+package de.mlessmann.internals.data;
+
+import de.mlessmann.api.data.IHWFuture;
+import de.mlessmann.api.data.IHWFutureProvider;
 
 import java.util.NoSuchElementException;
 
 /**
  * Created by Life4YourGames on 08.08.16.
  */
-public class HWFuture<T> {
+public class HWFuture<T> implements IHWFuture<T> {
 
     private IHWFutureProvider<T> provider;
 

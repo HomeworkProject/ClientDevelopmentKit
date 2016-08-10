@@ -1,4 +1,6 @@
-package de.mlessmann.networking.requests.results;
+package de.mlessmann.api.data;
+
+import de.mlessmann.internals.data.HWFuture;
 
 /**
  * Created by Life4YourGames on 08.08.16.

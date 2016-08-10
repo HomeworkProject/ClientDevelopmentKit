@@ -1,6 +1,8 @@
-package de.mlessmann.networking.requests;
+package de.mlessmann.internals.networking.requests;
 
-import de.mlessmann.annotations.API;
+import de.mlessmann.api.annotations.API;
+import de.mlessmann.api.networking.IMessageListener;
+import de.mlessmann.api.networking.IRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 

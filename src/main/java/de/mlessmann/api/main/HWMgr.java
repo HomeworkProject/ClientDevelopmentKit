@@ -1,14 +1,18 @@
-package de.mlessmann.hw;
+package de.mlessmann.api.main;
 
 import com.sun.istack.internal.Nullable;
 
-import de.mlessmann.annotations.API;
+import de.mlessmann.api.annotations.API;
+import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.exceptions.StillConnectedException;
-import de.mlessmann.hw.providers.HWProvider;
-import de.mlessmann.networking.HTTP;
-import de.mlessmann.networking.requests.RequestMgr;
-import de.mlessmann.networking.requests.prefactured.version.RequestVersion;
-import de.mlessmann.networking.requests.results.HWFuture;
+import de.mlessmann.api.data.IHWObj;
+import de.mlessmann.internals.data.HWProvider;
+import de.mlessmann.internals.networking.requests.gethw.RequestGetHW;
+import de.mlessmann.util.HTTP;
+import de.mlessmann.internals.networking.requests.RequestMgr;
+import de.mlessmann.api.data.IHWUser;
+import de.mlessmann.internals.networking.requests.login.RequestLogin;
+import de.mlessmann.internals.networking.requests.version.RequestVersion;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +40,8 @@ public class HWMgr {
     private Socket socket;
     private RequestMgr reqMgr;
     private Thread reqThread;
+
+    //--------- Authentication ---------
 
     //==================================================================================================================
     //======================================== API Level 1 =============================================================
@@ -163,7 +169,7 @@ public class HWMgr {
     //---------------------------------------- Communication -----------------------------------------------------------
 
     @API(APILevel = 1)
-    public HWFuture<Boolean> isCompatible() {
+    public IHWFuture<Boolean> isCompatible() {
 
         RequestVersion req = new RequestVersion();
 
@@ -171,6 +177,51 @@ public class HWMgr {
         reqMgr.queueRequest(req);
 
         return req.getFuture();
+
+    }
+
+    @API(APILevel = 1)
+    public IHWFuture<IHWUser> login(String grp, String usr, String auth) {
+
+        RequestLogin req = new RequestLogin();
+
+        req.reportMgr(reqMgr);
+        req.setGrp(grp);
+        req.setUsr(usr);
+        req.setAuth(auth);
+
+        reqMgr.queueRequest(req);
+
+        return req.getFuture();
+
+    }
+
+    @API(APILevel = 1)
+    public IHWFuture<List<IHWObj>> getHWOn(int yyyy, int MM, int dd) {
+
+        RequestGetHW req = new RequestGetHW();
+
+        req.reportMgr(reqMgr);
+        req.setDate(yyyy, MM, dd);
+
+        reqMgr.queueRequest(req);
+
+        return req.getFuture();
+
+    }
+
+    @API(APILevel = 1)
+    public IHWFuture<List<IHWObj>> getHWBetween(int yyyyFrom, int MMFrom, int ddFrom, int yyyyTo, int MMTo, int ddTo) {
+
+        RequestGetHW req = new RequestGetHW();
+
+        req.reportMgr(reqMgr);
+        req.setDates(yyyyFrom, MMFrom, ddFrom, yyyyTo, MMTo, ddTo);
+
+        reqMgr.queueRequest(req);
+
+        return req.getFuture();
+
 
     }
 

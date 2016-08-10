@@ -1,4 +1,4 @@
-package de.mlessmann.annotations;
+package de.mlessmann.api.annotations;
 
 /**
  * Created by Life4YourGames on 08.08.16.

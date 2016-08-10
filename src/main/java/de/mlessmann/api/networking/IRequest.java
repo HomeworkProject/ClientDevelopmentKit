@@ -1,4 +1,4 @@
-package de.mlessmann.networking.requests;
+package de.mlessmann.api.networking;
 
 import org.json.JSONObject;
 

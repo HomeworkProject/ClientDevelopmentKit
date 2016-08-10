@@ -1,12 +1,12 @@
-package de.mlessmann.networking.requests.prefactured.version;
+package de.mlessmann.internals.networking.requests.version;
 
-import de.mlessmann.annotations.API;
-import de.mlessmann.networking.requests.IMessageListener;
-import de.mlessmann.networking.requests.IRequest;
+import de.mlessmann.api.annotations.API;
+import de.mlessmann.api.networking.IMessageListener;
+import de.mlessmann.api.networking.IRequest;
 
-import de.mlessmann.networking.requests.RequestMgr;
-import de.mlessmann.networking.requests.results.HWFuture;
-import de.mlessmann.networking.requests.results.IHWFutureProvider;
+import de.mlessmann.internals.networking.requests.RequestMgr;
+import de.mlessmann.internals.data.HWFuture;
+import de.mlessmann.api.data.IHWFutureProvider;
 import de.mlessmann.util.Common;
 import org.json.JSONObject;
 
