@@ -10,15 +10,7 @@ import org.json.JSONObject;
  */
 @API
 public interface IHWObj extends IHWCarrier {
-
-
-    //------------------------- API Level 1 -----------------------------
-
-    static IHWObj.Builder builder() {
-        return new IHWObj.Builder();
-    }
-
-
+    
     boolean isDummy();
 
     String id();
