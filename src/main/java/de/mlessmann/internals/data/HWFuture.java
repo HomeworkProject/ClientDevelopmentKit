@@ -28,6 +28,12 @@ public class HWFuture<T> implements IHWFuture<T> {
 
     }
 
+    public int errorCode() {
+
+        return provider.getErrorCode(this);
+
+    }
+
     public T get() throws NoSuchElementException {
         if (!isPresent())
             throw new NoSuchElementException();

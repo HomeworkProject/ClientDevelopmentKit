@@ -3,14 +3,13 @@ package de.mlessmann.api.main;
 import com.sun.istack.internal.Nullable;
 
 import de.mlessmann.api.annotations.API;
-import de.mlessmann.api.data.IHWFuture;
+import de.mlessmann.api.data.*;
 import de.mlessmann.exceptions.StillConnectedException;
-import de.mlessmann.api.data.IHWObj;
 import de.mlessmann.internals.data.HWProvider;
+import de.mlessmann.internals.networking.requests.addhw.RequestAddHW;
 import de.mlessmann.internals.networking.requests.gethw.RequestGetHW;
 import de.mlessmann.util.HTTP;
 import de.mlessmann.internals.networking.requests.RequestMgr;
-import de.mlessmann.api.data.IHWUser;
 import de.mlessmann.internals.networking.requests.login.RequestLogin;
 import de.mlessmann.internals.networking.requests.version.RequestVersion;
 import org.json.JSONArray;
@@ -55,15 +54,15 @@ public class HWMgr {
      * @return List\<HWProvider\> of listed providers.
      */
     @API(APILevel = 1)
-    public List<HWProvider> getAvailableProviders(@Nullable String sUrl) throws JSONException, MalformedURLException, IOException {
+    public List<IHWProvider> getAvailableProviders(@Nullable String sUrl) throws JSONException, MalformedURLException, IOException {
 
-        ArrayList<JSONObject> providerList = getAvailableProviderList(sUrl);
+        List<JSONObject> providerList = getAvailableProviderList(sUrl);
 
-        ArrayList<HWProvider> result = new ArrayList<HWProvider>();
+        ArrayList<IHWProvider> result = new ArrayList<IHWProvider>();
 
         for (JSONObject o : providerList) {
 
-            HWProvider p = new HWProvider(o);
+            IHWProvider p = new HWProvider(o);
 
             if (p.isValid())
                 result.add(p);
@@ -110,7 +109,7 @@ public class HWMgr {
             reqMgr = new RequestMgr(socket);
 
             reqThread = new Thread(reqMgr);
-            reqThread.run();
+            reqThread.start();
 
         } catch (IOException e) {
 
@@ -225,6 +224,19 @@ public class HWMgr {
 
     }
 
+    @API(APILevel = 1)
+    public IHWFuture<Boolean> addHW(IHWCarrier hw) {
+
+        RequestAddHW req = new RequestAddHW();
+
+        req.setHW(hw);
+        req.reportMgr(reqMgr);
+        reqMgr.queueRequest(req);
+
+        return req.getFuture();
+
+    }
+
     //==================================================================================================================
     //======================================== API Level 2 =============================================================
     //==================================================================================================================
@@ -232,7 +244,7 @@ public class HWMgr {
     //-------------------------------- Provider discovery --------------------------------------------------------------
 
     @API(APILevel = 2)
-    public ArrayList<JSONObject> getAvailableProviderList(@Nullable String sUrl) throws JSONException, MalformedURLException, IOException {
+    public List<JSONObject> getAvailableProviderList(@Nullable String sUrl) throws JSONException, MalformedURLException, IOException {
 
         if (sUrl == null)
             sUrl = "http://schule.m-lessmann.de/hwserver/sources.json";

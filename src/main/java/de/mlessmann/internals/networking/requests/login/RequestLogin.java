@@ -1,6 +1,7 @@
 package de.mlessmann.internals.networking.requests.login;
 
 import de.mlessmann.api.annotations.API;
+import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWUser;
 import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
@@ -22,6 +23,7 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
 
     private String id;
     private int cid;
+    private int errorCode = 0;
     private IHWUser result = null;
     private HWFuture<IHWUser> future;
     private RequestMgr reqMgr;
@@ -65,7 +67,7 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
     }
 
     @API(APILevel = 2)
-    public HWFuture<IHWUser> getFuture() {
+    public IHWFuture<IHWUser> getFuture() {
         return this.future;
     }
 
@@ -103,8 +105,9 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
         result = new Usr(
                 REQ.getJSONArray("parameters").getString(0),
                 REQ.getJSONArray("parameters").getString(1),
-                IHWUser.UNKNOWN
+                IHWFuture.ERRORCodes.UNKNOWN
         );
+        errorCode = IHWFuture.ERRORCodes.UNKNOWN;
     }
 
     @Override
@@ -125,8 +128,9 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                 result = new Usr(
                         REQ.getJSONArray("paramaters").getString(0),
                         REQ.getJSONArray("paramarers").getString(1),
-                        IHWUser.LOGGEDIN
+                        IHWFuture.ERRORCodes.LOGGEDIN
                 );
+                errorCode = IHWFuture.ERRORCodes.LOGGEDIN;
 
                 unlock = true;
             } else if (msg.optString("payload_type", "null").equals("error")) {
@@ -137,23 +141,27 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                     result = new Usr(
                             REQ.getJSONArray("parameters").getString(0),
                             REQ.getJSONArray("parameters").getString(1),
-                            IHWUser.INVALIDCREDERR
+                            IHWFuture.ERRORCodes.INVALIDCREDERR
                     );
+                    errorCode = IHWFuture.ERRORCodes.INVALIDCREDERR;
+
                 } else if (e.optString("error", "null").equals(Errors.NotFoundError)) {
 
                     result = new Usr(
                             REQ.getJSONArray("parameters").getString(0),
                             REQ.getJSONArray("parameters").getString(1),
-                            IHWUser.NOTFOUNDERR
+                            IHWFuture.ERRORCodes.NOTFOUNDERR
                     );
+                    errorCode = IHWFuture.ERRORCodes.NOTFOUNDERR;
 
                 } else {
 
                     result = new Usr(
                             REQ.getJSONArray("parameters").getString(0),
                             REQ.getJSONArray("parameters").getString(1),
-                            IHWUser.UNKNOWN
+                            IHWFuture.ERRORCodes.UNKNOWN
                     );
+                    errorCode = IHWFuture.ERRORCodes.UNKNOWN;
 
                 }
 
@@ -176,11 +184,19 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
 
 
     @Override
-    public IHWUser getPayload(HWFuture future) {
+    public IHWUser getPayload(IHWFuture future) {
         if (future == this.future)
             return result;
         else
             return null;
+    }
+
+    @Override
+    public int getErrorCode(IHWFuture future) {
+        if (future == this.future)
+            return errorCode;
+        else
+            return 0;
     }
 
     //------------------------------------- Private IHWUser ------------------------------------------------------------

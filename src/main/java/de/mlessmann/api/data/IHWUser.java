@@ -5,17 +5,11 @@ package de.mlessmann.api.data;
  */
 public interface IHWUser {
 
-    public static int UNKNOWN = -1;
-    public static int NOTFOUNDERR = 404;
-    public static int INVALIDCREDERR = 401;
-    public static int LOGGEDIN = 200;
-
     String group();
 
     String name();
 
+    @Deprecated
     int loginStatus();
-
-
 
 }

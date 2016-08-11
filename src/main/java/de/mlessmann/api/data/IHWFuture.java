@@ -15,4 +15,22 @@ public interface IHWFuture<T> {
 
     T getOrElse(T def);
 
+    int errorCode();
+
+    public class ERRORCodes {
+
+        public static final int UNKNOWN = -1;
+        public static final int OK = 200;
+        public static final int LOGGEDIN = 2001;
+
+        public static final int PROTOError = 400;
+        public static final int DATETIMEError = 4001;
+
+        public static final int LOGINREQ = 401;
+        public static final int INVALIDCREDERR = 401;
+        
+        public static final int NOTFOUNDERR = 404;
+
+    }
+
 }

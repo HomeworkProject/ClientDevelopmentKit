@@ -7,6 +7,8 @@ import de.mlessmann.internals.data.HWFuture;
  */
 public interface IHWFutureProvider<T> {
 
-    T getPayload(HWFuture future);
+    T getPayload(IHWFuture future);
+
+    int getErrorCode(IHWFuture future);
 
 }

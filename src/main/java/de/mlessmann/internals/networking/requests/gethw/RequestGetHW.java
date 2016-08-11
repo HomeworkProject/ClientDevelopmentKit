@@ -1,6 +1,7 @@
 package de.mlessmann.internals.networking.requests.gethw;
 
 import de.mlessmann.api.annotations.API;
+import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWObj;
 import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
@@ -29,6 +30,7 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
     private String id;
     private int cid;
+    private int errorCode = 0;
     private List<IHWObj> result = null;
     private HWFuture<List<IHWObj>> future;
     private RequestMgr reqMgr;
@@ -92,7 +94,7 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
     }
 
     @API(APILevel = 2)
-    public HWFuture<List<IHWObj>> getFuture() {
+    public IHWFuture<List<IHWObj>> getFuture() {
         return this.future;
     }
 
@@ -157,12 +159,11 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
                     if (o instanceof JSONObject) {
                         JSONObject obj = ((JSONObject) o);
 
-                        obj.put("errorCode", IHWObj.OK);
-
                         list.add(new HWObject(obj));
                     }
                 }
 
+                errorCode = IHWFuture.ERRORCodes.OK;
                 result = list;
 
             } else if (msg.optString("payload_type", "null").equals("error")) {
@@ -173,13 +174,17 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
                 String error = e.optString("error", "null");
 
                 if (error.equals(Errors.ProtoError)) {
-                    o = HWObject.fromErrorCode(IHWObj.PROTOError);
+                    errorCode = IHWFuture.ERRORCodes.PROTOError;
+                    o = HWObject.dummy();
                 } else if (error.equals(Errors.LOGINREQError)) {
-                    o = HWObject.fromErrorCode(IHWObj.LOGINREQ);
+                    errorCode = IHWFuture.ERRORCodes.LOGINREQ;
+                    o = HWObject.dummy();
                 } else if (error.equals(Errors.DATETIMError)) {
-                    o = HWObject.fromErrorCode(IHWObj.DATETIMEError);
+                    errorCode = IHWFuture.ERRORCodes.DATETIMEError;
+                    o = HWObject.dummy();
                 } else {
-                    o = HWObject.fromErrorCode(IHWObj.UNKNOWN);
+                    errorCode = IHWFuture.ERRORCodes.UNKNOWN;
+                    o = HWObject.dummy();
                 }
 
                 ArrayList<IHWObj> list = new ArrayList<IHWObj>();
@@ -202,11 +207,19 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
 
     @Override
-    public List<IHWObj> getPayload(HWFuture future) {
+    public List<IHWObj> getPayload(IHWFuture future) {
         if (future == this.future)
             return result;
         else
             return null;
+    }
+
+    @Override
+    public int getErrorCode(IHWFuture future) {
+        if (future == this.future)
+            return errorCode;
+        else
+            return 0;
     }
 
 }

@@ -40,7 +40,7 @@ public class RequestMgr implements Runnable {
 
     public void run() {
 
-        while (!killed || !crashed) {
+        while (!killed && !crashed) {
 
             if (!crashed && reader == null && writer == null) {
 

@@ -10,7 +10,7 @@ import org.json.JSONObject;
  */
 public class HWObject implements IHWObj {
 
-    public static HWObject fromErrorCode(int e) {
+    public static HWObject dummy() {
 
         JSONObject j = new JSONObject();
 
@@ -19,7 +19,7 @@ public class HWObject implements IHWObj {
         j.put("date", new int[]{0,0,0});
         j.put("long", new JSONObject());
         j.put("short", new JSONObject());
-        j.put("errorCode", e);
+        j.put("dummy", true);
 
         return new HWObject(j);
 
@@ -32,8 +32,8 @@ public class HWObject implements IHWObj {
     }
 
     @Override
-    public int errorCode() {
-        return src.optInt("errorCode", -1);
+    public boolean isDummy() {
+        return src.optBoolean("dummy", false);
     }
 
     @Override

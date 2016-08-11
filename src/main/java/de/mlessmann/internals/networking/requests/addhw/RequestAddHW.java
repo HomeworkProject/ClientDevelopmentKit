@@ -1,38 +1,41 @@
-package de.mlessmann.internals.networking.requests.version;
+package de.mlessmann.internals.networking.requests.addhw;
 
 import de.mlessmann.api.annotations.API;
+import de.mlessmann.api.data.IHWCarrier;
 import de.mlessmann.api.data.IHWFuture;
+import de.mlessmann.api.data.IHWFutureProvider;
+import de.mlessmann.api.data.IHWObj;
+import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
-
-import de.mlessmann.internals.networking.requests.RequestMgr;
 import de.mlessmann.internals.data.HWFuture;
-import de.mlessmann.api.data.IHWFutureProvider;
-import de.mlessmann.util.Common;
+import de.mlessmann.internals.data.HWObject;
+import de.mlessmann.internals.networking.requests.RequestMgr;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
- * Created by Life4YourGames on 08.08.16.
- * Class implements the complete Version check.
- * Also an example that Request, Listener and Provider can be the same object
+ * Created by Life4YourGames on 11.08.16.
  */
-public class RequestVersion implements IRequest, IMessageListener, IHWFutureProvider<Boolean>{
+public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvider<Boolean> {
 
-    static final JSONObject REQ = new JSONObject("{\n\"command\": \"getInfo\"\n}");
+    private JSONObject REQ = new JSONObject("{\n\"command\": \"addhw\"\n}");
 
     private String id;
     private int cid;
     private int errorCode = 0;
-    private Boolean isCompatible = null;
+    private Boolean result = null;
     private HWFuture<Boolean> future;
     private RequestMgr reqMgr;
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public RequestVersion() {
+    public RequestAddHW() {
 
         genID();
 
@@ -54,6 +57,13 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
     //------------------------------------- Payload/Result -------------------------------------------------------------
 
     @API(APILevel = 2)
+    public void setHW(IHWCarrier obj) {
+
+        REQ.put("homework", obj.getJSON());
+
+    }
+
+    @API(APILevel = 2)
     public IHWFuture<Boolean> getFuture() {
         return this.future;
     }
@@ -72,7 +82,9 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
 
     @Override
     public JSONObject getRequestMsg() {
+
         return REQ;
+
     }
 
     @Override
@@ -87,8 +99,9 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
 
     @Override
     public void reportFail(Exception e) {
-        //This means, not compatible!
-        isCompatible = Boolean.FALSE;
+
+        result = false;
+
     }
 
     @Override
@@ -101,15 +114,10 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
 
     @Override
     public void onMessage(JSONObject msg) {
-        if (msg.optString("handler", "null").equals("de.mlessmann.commands.getProtocolVersion")) {
+        if (msg.optInt("commID", -1) != cid) return;
 
-            String version = msg.getString("protoVersion");
-            String currentVersion = API.PROTOVERSION;
 
-            isCompatible = Common.areCompatible(version, currentVersion);
 
-            reqMgr.unlockQueue(this);
-        }
     }
 
     @Override
@@ -123,16 +131,17 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
     @Override
     public Boolean getPayload(IHWFuture future) {
         if (future == this.future)
-            return isCompatible;
+            return result;
         else
             return null;
     }
 
+    @Override
     public int getErrorCode(IHWFuture future) {
         if (future == this.future)
             return errorCode;
         else
             return 0;
     }
-}
 
+}
