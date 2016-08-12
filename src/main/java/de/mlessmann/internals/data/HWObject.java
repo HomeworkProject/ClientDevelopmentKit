@@ -1,6 +1,6 @@
 package de.mlessmann.internals.data;
 
-import com.sun.istack.internal.Nullable;
+import de.mlessmann.api.annotations.Nullable;
 import de.mlessmann.api.data.IHWObj;
 import org.json.JSONArray;
 import org.json.JSONObject;

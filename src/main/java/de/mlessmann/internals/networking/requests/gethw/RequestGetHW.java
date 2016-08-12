@@ -165,6 +165,7 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
                 errorCode = IHWFuture.ERRORCodes.OK;
                 result = list;
+                future.pokeListeners();
 
             } else if (msg.optString("payload_type", "null").equals("error")) {
 
@@ -191,6 +192,7 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
                 list.add(o);
                 result = list;
+                future.pokeListeners();
 
             }
 

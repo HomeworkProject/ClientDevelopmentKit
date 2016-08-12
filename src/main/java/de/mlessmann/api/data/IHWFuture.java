@@ -17,6 +17,8 @@ public interface IHWFuture<T> {
 
     int errorCode();
 
+    void registerListener(IHWFutureListener listener);
+
     public class ERRORCodes {
 
         public static final int UNKNOWN = -1;

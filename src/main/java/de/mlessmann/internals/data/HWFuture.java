@@ -1,8 +1,11 @@
 package de.mlessmann.internals.data;
 
 import de.mlessmann.api.data.IHWFuture;
+import de.mlessmann.api.data.IHWFutureListener;
 import de.mlessmann.api.data.IHWFutureProvider;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -11,6 +14,7 @@ import java.util.NoSuchElementException;
 public class HWFuture<T> implements IHWFuture<T> {
 
     private IHWFutureProvider<T> provider;
+    private List<IHWFutureListener> listeners = new ArrayList<IHWFutureListener>();
 
     public HWFuture(IHWFutureProvider<T> provider) {
 
@@ -46,6 +50,16 @@ public class HWFuture<T> implements IHWFuture<T> {
         if (isPresent())
             return get();
         return def;
+    }
+
+    public void registerListener(IHWFutureListener listener) {
+        if (!listeners.contains(listener))
+            listeners.add(listener);
+    }
+
+    public void pokeListeners() {
+        for (IHWFutureListener l : listeners)
+            l.notifyListener(this);
     }
 
 }

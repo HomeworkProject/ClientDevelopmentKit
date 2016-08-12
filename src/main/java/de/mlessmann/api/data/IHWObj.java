@@ -1,7 +1,7 @@
 package de.mlessmann.api.data;
 
-import com.sun.istack.internal.Nullable;
 import de.mlessmann.api.annotations.API;
+import de.mlessmann.api.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,7 +10,7 @@ import org.json.JSONObject;
  */
 @API
 public interface IHWObj extends IHWCarrier {
-    
+
     boolean isDummy();
 
     String id();

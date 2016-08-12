@@ -1,6 +1,6 @@
 package de.mlessmann.internals.data;
 
-import com.sun.istack.internal.NotNull;
+import de.mlessmann.api.annotations.NotNull;
 
 import de.mlessmann.api.data.IHWProvider;
 import de.mlessmann.api.main.HWMgr;

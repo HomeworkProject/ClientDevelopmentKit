@@ -1,8 +1,7 @@
 package de.mlessmann.api.main;
 
-import com.sun.istack.internal.Nullable;
-
 import de.mlessmann.api.annotations.API;
+import de.mlessmann.api.annotations.Nullable;
 import de.mlessmann.api.data.*;
 import de.mlessmann.exceptions.StillConnectedException;
 import de.mlessmann.internals.data.HWProvider;

@@ -10,9 +10,6 @@ import org.json.JSONObject;
 public interface IHWCarrier {
 
     //------------------------- METHODS ---------------------------------
-    static IHWCarrier.Builder builder() {
-        return new IHWCarrier.Builder();
-    }
 
     @API
     JSONObject getJSON();
@@ -21,6 +18,8 @@ public interface IHWCarrier {
     //Builder
 
     class Builder {
+
+        static IHWCarrier.Builder builder() { return new IHWCarrier.Builder(); }
 
         private JSONObject json;
         private IHWCarrier.JSONBuilder jsonBuilder;

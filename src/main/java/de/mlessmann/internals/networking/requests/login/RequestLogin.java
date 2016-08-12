@@ -131,8 +131,9 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                         IHWFuture.ERRORCodes.LOGGEDIN
                 );
                 errorCode = IHWFuture.ERRORCodes.LOGGEDIN;
-
                 unlock = true;
+                future.pokeListeners();
+
             } else if (msg.optString("payload_type", "null").equals("error")) {
 
                 JSONObject e = msg.getJSONObject("payload");
@@ -166,7 +167,7 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                 }
 
                 unlock = true;
-
+                future.pokeListeners();
             }
 
             if (unlock)

@@ -1,6 +1,6 @@
 package de.mlessmann.util;
 
-import com.sun.istack.internal.Nullable;
+import de.mlessmann.api.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
