@@ -122,6 +122,9 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
         int status = msg.optInt("status", 0);
         if (status == 201) {
             errorCode = HWFuture.ERRORCodes.OK;
+            future.pokeListeners();
+            reqMgr.unregisterListener(this);
+            reqMgr.unregisterRequest(this);
             return;
         }
 
@@ -144,6 +147,10 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
             } else {
                 errorCode = HWFuture.ERRORCodes.UNKNOWN;
             }
+
+            future.pokeListeners();
+            reqMgr.unregisterListener(this);
+            reqMgr.unregisterRequest(this);
 
         }
 

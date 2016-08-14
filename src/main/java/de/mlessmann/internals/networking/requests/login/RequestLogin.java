@@ -134,7 +134,6 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                 );
                 errorCode = IHWFuture.ERRORCodes.LOGGEDIN;
                 unlock = true;
-                future.pokeListeners();
 
             } else if (msg.optString("payload_type", "null").equals("error")) {
 
@@ -169,11 +168,15 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                 }
 
                 unlock = true;
-                future.pokeListeners();
+
             }
 
-            if (unlock)
-                reqMgr.unlockQueue(this);
+            if (unlock) {
+                //reqMgr.unlockQueue(this);
+                future.pokeListeners();
+                reqMgr.unregisterListener(this);
+                reqMgr.unregisterRequest(this);
+            }
         }
 
     }

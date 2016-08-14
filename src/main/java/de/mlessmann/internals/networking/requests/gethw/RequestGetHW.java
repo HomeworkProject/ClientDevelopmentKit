@@ -193,6 +193,8 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
                 list.add(o);
                 result = list;
                 future.pokeListeners();
+                reqMgr.unregisterListener(this);
+                reqMgr.unregisterRequest(this);
 
             }
 

@@ -135,6 +135,20 @@ public class RequestMgr implements Runnable {
         return requestQueue.contains(request);
     }
 
+    @API(APILevel = 3)
+    public synchronized void unregisterListener(IMessageListener l) {
+
+        listeners.remove(l);
+
+    }
+
+    @API(APILevel = 3)
+    public synchronized void unregisterRequest(IRequest r) {
+        requestQueue.remove(r);
+        cIDs.remove(r);
+        if (requestsLockedBy == r) unlockQueue(r);
+    }
+
     //--------------------------------------------- Misc. --------------------------------------------------------------
 
 
