@@ -10,5 +10,7 @@ public interface Errors {
     public static String ProtoError = "ProtocolError";
     public static String LOGINREQError = "LoginRequiredError";
     public static String DATETIMError = "DateTimeError";
+    public static String InsuffPermError = "InsufficientPermissionError";
+    public static String AddHWError = "AddHWError";
 
 }

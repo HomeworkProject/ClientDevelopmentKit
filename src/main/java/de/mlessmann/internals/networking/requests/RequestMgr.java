@@ -3,13 +3,13 @@ package de.mlessmann.internals.networking.requests;
 import de.mlessmann.api.annotations.API;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
+import de.mlessmann.exceptions.OutOfCIDsException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Life4YourGames on 08.08.16.
@@ -29,6 +29,8 @@ public class RequestMgr implements Runnable {
 
     private List<IMessageListener> listeners = new ArrayList<IMessageListener>();
     private List<IRequest> requestQueue = new ArrayList<IRequest>();
+    private Map<IRequest, Integer> cIDs = new HashMap<IRequest, Integer>();
+    private Random rnd = new Random();
 
     public RequestMgr(Socket socket) {
 
@@ -96,6 +98,12 @@ public class RequestMgr implements Runnable {
     @API(APILevel = 3)
     public synchronized void queueRequest(IRequest request) {
 
+        int i = genCID();
+        if (i == 0)
+            request.reportFail(new OutOfCIDsException());
+        cIDs.put(request, i);
+        request.reportCommID(i);
+
         if (requestsLocked())
             requestQueue.add(request);
         else {
@@ -147,6 +155,7 @@ public class RequestMgr implements Runnable {
     }
 
     //--------------------------------------------- Internals ----------------------------------------------------------
+
     private void sendPendingRequests() {
 
         if (!requestQueue.isEmpty()) {
@@ -183,7 +192,10 @@ public class RequestMgr implements Runnable {
 
         try {
 
-            writer.write(r.getRequestMsg().toString(0) + "\n");
+            JSONObject msg = r.getRequestMsg();
+            msg.put("commID", cIDs.get(r));
+
+            writer.write(msg.toString(0) + "\n");
             r.poke();
 
         } catch (IOException e) {
@@ -198,6 +210,20 @@ public class RequestMgr implements Runnable {
 
         return requestsLockedBy != null;
 
+    }
+
+    private int genCID() {
+
+        int i;
+        int x = 0;
+
+        do {
+            i = rnd.nextInt(900) + 100;
+        } while (cIDs.containsValue(i) && ++x < 1000);
+
+        if (x >= 1000)
+            return 0;
+        return i;
     }
 
 }

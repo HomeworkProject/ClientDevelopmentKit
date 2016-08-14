@@ -27,9 +27,12 @@ public interface IHWFuture<T> {
 
         public static final int PROTOError = 400;
         public static final int DATETIMEError = 4001;
+        public static final int INVALIDPAYLOAD = 4002;
 
         public static final int LOGINREQ = 401;
         public static final int INVALIDCREDERR = 401;
+
+        public static final int INSUFFPERM = 403;
         
         public static final int NOTFOUNDERR = 404;
 

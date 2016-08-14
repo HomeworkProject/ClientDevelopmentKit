@@ -23,7 +23,7 @@ public class HWFuture<T> implements IHWFuture<T> {
     }
 
     public boolean isDone() {
-        return isPresent();
+        return isPresent() || errorCode() != 0;
     }
 
     public boolean isPresent() {

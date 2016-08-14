@@ -120,6 +120,8 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
 
     @Override
     public void onMessage(JSONObject msg) {
+        if (msg.optInt("commID", -1) != cid) return;
+
         if (msg.optString("handler", "null").equals("de.mlessmann.commands.login")) {
 
             boolean unlock = false;

@@ -116,7 +116,36 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
     public void onMessage(JSONObject msg) {
         if (msg.optInt("commID", -1) != cid) return;
 
-        //TODO: Response ?
+        if (!msg.optString("handler", "null").equals("de.mlessmann.commands.addHW"))
+            return;
+
+        int status = msg.optInt("status", 0);
+        if (status == 201) {
+            errorCode = HWFuture.ERRORCodes.OK;
+            return;
+        }
+
+        if (msg.optString("payload_type", "null").equals("error")) {
+            JSONObject e = msg.getJSONObject("payload");
+
+            String err = e.optString("error", "null");
+
+            if (err.equals(Errors.ProtoError))
+                errorCode = HWFuture.ERRORCodes.PROTOError;
+            else if (err.equals(Errors.LOGINREQError))
+                errorCode = HWFuture.ERRORCodes.LOGINREQ;
+            else if (err.equals(Errors.InsuffPermError))
+                errorCode = HWFuture.ERRORCodes.INSUFFPERM;
+            else if (err.equals(Errors.AddHWError)) {
+                if (status == 400)
+                    errorCode = HWFuture.ERRORCodes.INVALIDPAYLOAD;
+                else
+                    errorCode = HWFuture.ERRORCodes.UNKNOWN;
+            } else {
+                errorCode = HWFuture.ERRORCodes.UNKNOWN;
+            }
+
+        }
 
     }
 
