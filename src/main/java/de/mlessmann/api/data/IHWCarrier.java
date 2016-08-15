@@ -69,7 +69,7 @@ public interface IHWCarrier {
             if (s == null)
                 s = new JSONObject();
             r.put("short", s);
-
+            r.put("type", "homework");
             return r;
 
         }

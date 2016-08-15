@@ -12,5 +12,6 @@ public interface Errors {
     public static String DATETIMError = "DateTimeError";
     public static String InsuffPermError = "InsufficientPermissionError";
     public static String AddHWError = "AddHWError";
+    public static String DelHWError = "DelHWError";
 
 }

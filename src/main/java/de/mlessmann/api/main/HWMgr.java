@@ -6,6 +6,7 @@ import de.mlessmann.api.data.*;
 import de.mlessmann.exceptions.StillConnectedException;
 import de.mlessmann.internals.data.HWProvider;
 import de.mlessmann.internals.networking.requests.addhw.RequestAddHW;
+import de.mlessmann.internals.networking.requests.delhw.RequestDelHW;
 import de.mlessmann.internals.networking.requests.gethw.RequestGetHW;
 import de.mlessmann.util.HTTP;
 import de.mlessmann.internals.networking.requests.RequestMgr;
@@ -236,6 +237,16 @@ public class HWMgr {
 
     }
 
+    @API(APILevel = 1)
+    public IHWFuture<Boolean> delHW(IHWCarrier hw) {
+
+        JSONArray dt = hw.getJSON().getJSONArray("date");
+        String id = hw.getJSON().optString("id", "null");
+
+        return delHW(id, dt.optInt(0, 2000), dt.optInt(1, 1), dt.optInt(2,1));
+
+    }
+
     //==================================================================================================================
     //======================================== API Level 2 =============================================================
     //==================================================================================================================
@@ -281,6 +292,21 @@ public class HWMgr {
         if (connected)
             throw new StillConnectedException("Cannot change port when still connected!");
         this.port = port;
+    }
+
+    @API(APILevel = 2)
+    public IHWFuture<Boolean> delHW(String id, int yyyy, int MM, int dd) {
+
+        RequestDelHW req = new RequestDelHW();
+
+        req.setID(id);
+        req.setDate(yyyy, MM, dd);
+
+        req.reportMgr(reqMgr);
+        reqMgr.queueRequest(req);
+
+        return req.getFuture();
+
     }
 
 }
