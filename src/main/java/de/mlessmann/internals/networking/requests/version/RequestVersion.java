@@ -107,10 +107,10 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
 
             isCompatible = Common.areCompatible(version, currentVersion);
 
-            future.pokeListeners();
             reqMgr.unregisterListener(this);
             reqMgr.unregisterRequest(this);
             //reqMgr.unlockQueue(this);
+            future.pokeListeners();
         }
     }
 
