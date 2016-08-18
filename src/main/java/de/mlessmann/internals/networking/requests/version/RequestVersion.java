@@ -20,7 +20,7 @@ import java.util.Calendar;
  */
 public class RequestVersion implements IRequest, IMessageListener, IHWFutureProvider<Boolean>{
 
-    static final JSONObject REQ = new JSONObject("{\n\"command\": \"getInfo\"\n}");
+    static final JSONObject REQ = new JSONObject("{\n\"command\": \"getinfo\"\n}");
 
     private String id;
     private int cid;

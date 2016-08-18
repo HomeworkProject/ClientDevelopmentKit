@@ -143,9 +143,9 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
                 errorCode = HWFuture.ERRORCodes.UNKNOWN;
             }
 
-            future.pokeListeners();
             reqMgr.unregisterListener(this);
             reqMgr.unregisterRequest(this);
+            future.pokeListeners();
 
         }
 

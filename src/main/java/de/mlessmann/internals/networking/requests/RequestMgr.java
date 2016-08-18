@@ -7,6 +7,7 @@ import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.exceptions.OutOfCIDsException;
 import de.mlessmann.internals.data.HWFuture;
+import de.mlessmann.internals.networking.requests.greeting.GreetListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -95,6 +96,10 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             connResult = e;
 
         }
+
+        GreetListener gl = new GreetListener();
+        gl.reportMgr(this);
+        requestsLockedBy = gl;
 
         fConnResult.pokeListeners();
 

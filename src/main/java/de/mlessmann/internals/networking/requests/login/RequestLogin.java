@@ -173,9 +173,9 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
 
             if (unlock) {
                 //reqMgr.unlockQueue(this);
-                future.pokeListeners();
                 reqMgr.unregisterListener(this);
                 reqMgr.unregisterRequest(this);
+                future.pokeListeners();
             }
         }
 
