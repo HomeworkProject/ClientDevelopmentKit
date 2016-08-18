@@ -259,7 +259,10 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             JSONObject msg = r.getRequestMsg();
             msg.put("commID", cIDs.get(r));
 
-            writer.write(msg.toString(0) + "\n");
+            String sMsg = msg.toString(0);
+            sMsg = sMsg.replaceAll("\n", "") + "\n";
+            writer.write(sMsg);
+            writer.flush();
             r.poke();
 
         } catch (IOException e) {
