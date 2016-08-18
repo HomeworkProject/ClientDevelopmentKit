@@ -118,7 +118,11 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
                 JSONObject msg = new JSONObject(ln);
 
-                for (IMessageListener l : listeners) {
+
+
+                for (int i = (listeners.size() -1); i >= 0; i--) {
+
+                    IMessageListener l = listeners.get(i);
 
                     l.onMessage(msg);
 
