@@ -6,19 +6,21 @@ import de.mlessmann.api.data.*;
 import de.mlessmann.exceptions.StillConnectedException;
 import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.data.HWProvider;
+import de.mlessmann.internals.networking.requests.RequestMgr;
 import de.mlessmann.internals.networking.requests.addhw.RequestAddHW;
 import de.mlessmann.internals.networking.requests.delhw.RequestDelHW;
 import de.mlessmann.internals.networking.requests.gethw.RequestGetHW;
-import de.mlessmann.util.HTTP;
-import de.mlessmann.internals.networking.requests.RequestMgr;
 import de.mlessmann.internals.networking.requests.login.RequestLogin;
 import de.mlessmann.internals.networking.requests.version.RequestVersion;
+import de.mlessmann.util.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.Proxy;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -248,11 +250,11 @@ public class HWMgr {
 
         ArrayList<JSONObject> result = new ArrayList<JSONObject>();
 
-        for (Object o : serverList) {
-
+        //For-Each not possible due to the org.json lib in android
+        for (int i = 0; i < serverList.length(); i++) {
+            Object o = serverList.get(i);
             if (o instanceof JSONObject)
                 result.add((JSONObject) o);
-
         }
 
         return result;
