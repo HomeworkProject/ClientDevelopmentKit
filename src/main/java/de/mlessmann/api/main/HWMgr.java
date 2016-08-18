@@ -81,7 +81,7 @@ public class HWMgr {
      */
 
     @API(APILevel = 1)
-    public void setProvider(HWProvider p) throws StillConnectedException {
+    public void setProvider(IHWProvider p) throws StillConnectedException {
 
         setServerAddress(p.getAddress());
         setPort(p.getPort());
@@ -123,7 +123,7 @@ public class HWMgr {
     }
 
     @API(APILevel = 1)
-    public boolean connect(HWProvider provider) {
+    public boolean connect(IHWProvider provider) {
 
         if (connected)
             release(true);
