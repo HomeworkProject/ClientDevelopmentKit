@@ -1,22 +1,30 @@
 package de.mlessmann.internals.networking.requests;
 
 import de.mlessmann.api.annotations.API;
+import de.mlessmann.api.data.IHWFuture;
+import de.mlessmann.api.data.IHWFutureProvider;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.exceptions.OutOfCIDsException;
+import de.mlessmann.internals.data.HWFuture;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.*;
 
 /**
  * Created by Life4YourGames on 08.08.16.
  */
 @API(APILevel = 3)
-public class RequestMgr implements Runnable {
+public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
+    private String serverAddress;
+    private int port;
+    private SocketAddress sAddr;
     private Socket socket;
     private BufferedReader reader;
     private BufferedWriter writer;
@@ -32,15 +40,58 @@ public class RequestMgr implements Runnable {
     private Map<IRequest, Integer> cIDs = new HashMap<IRequest, Integer>();
     private Random rnd = new Random();
 
-    public RequestMgr(Socket socket) {
+    //HWFutureProvider
+    private HWFuture<Exception> fConnResult;
+    private Exception connResult = null;
+    private int connErrCode = 0;
 
-        this.socket = socket;
+    public RequestMgr(String serverAddr, int port) {
 
+        this.serverAddress = serverAddr;
+        this.port = port;
+
+        fConnResult = new HWFuture<Exception>(this);
+
+    }
+
+    //------------------------------------------ HWFuture --------------------------------------------------------------
+
+    public HWFuture<Exception> getConnResult() { return fConnResult; }
+
+    @Override
+    public int getErrorCode(IHWFuture future) {
+        return connErrCode;
+    }
+
+    @Override
+    public Exception getPayload(IHWFuture future) {
+        return connResult;
     }
 
     //------------------------------------------ Main Loop -------------------------------------------------------------
 
     public void run() {
+
+        try {
+
+            InetSocketAddress sAddr = new InetSocketAddress(serverAddress, port);
+
+            socket = new Socket();
+
+            socket.connect(sAddr);
+
+            connErrCode = IHWFuture.ERRORCodes.OK;
+
+        } catch (IOException e) {
+
+            connErrCode = IHWFuture.ERRORCodes.UNKNOWN;
+            crashed = true;
+            crashRsn = e;
+            connResult = e;
+
+        }
+
+        fConnResult.pokeListeners();
 
         while (!killed && !crashed) {
 

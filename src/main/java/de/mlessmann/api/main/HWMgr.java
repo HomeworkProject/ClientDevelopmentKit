@@ -4,6 +4,7 @@ import de.mlessmann.api.annotations.API;
 import de.mlessmann.api.annotations.Nullable;
 import de.mlessmann.api.data.*;
 import de.mlessmann.exceptions.StillConnectedException;
+import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.data.HWProvider;
 import de.mlessmann.internals.networking.requests.addhw.RequestAddHW;
 import de.mlessmann.internals.networking.requests.delhw.RequestDelHW;
@@ -91,52 +92,30 @@ public class HWMgr {
     //---------------------------------------- Connection --------------------------------------------------------------
 
     @API(APILevel = 1)
-    public boolean connect() throws StillConnectedException {
+    public HWFuture<Exception> connect() throws StillConnectedException {
 
         if (connected)
             throw new StillConnectedException("Unable to connect to new server while still connected to old one!");
 
-        try {
+        //TODO: Implement encryption/compression/etc.
 
-            //TODO: Implement encryption/compression/etc.
+        reqMgr = new RequestMgr(serverAddress, port);
 
-            InetSocketAddress sAddr = new InetSocketAddress(serverAddress, port);
+        reqThread = new Thread(reqMgr);
+        reqThread.start();
 
-            socket = new Socket();
-
-            socket.connect(sAddr);
-
-            reqMgr = new RequestMgr(socket);
-
-            reqThread = new Thread(reqMgr);
-            reqThread.start();
-
-        } catch (IOException e) {
-
-            //TODO: Implement error reporting
-            return false;
-
-        }
-
-        return socket.isConnected();
+        return reqMgr.getConnResult();
 
     }
 
     @API(APILevel = 1)
-    public boolean connect(IHWProvider provider) {
+    public HWFuture<Exception> connect(IHWProvider provider) throws StillConnectedException{
 
         if (connected)
             release(true);
 
-        try {
-            setProvider(provider);
-            return connect();
-        } catch (StillConnectedException e) {
-
-            //TODO: Implement "crash" on unexpected exception
-            return false;
-
-        }
+        setProvider(provider);
+        return connect();
 
     }
 
