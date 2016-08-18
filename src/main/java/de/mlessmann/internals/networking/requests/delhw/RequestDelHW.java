@@ -158,7 +158,10 @@ public class RequestDelHW implements IRequest, IMessageListener, IHWFutureProvid
 
     @Override
     public void reportMgr(RequestMgr mgr) {
+        if (reqMgr != null)
+            reqMgr.unregisterListener(this);
         reqMgr = mgr;
+        reqMgr.registerListener(this);
     }
 
     //------------------------------------ IHWFutureProvider -----------------------------------------------------------

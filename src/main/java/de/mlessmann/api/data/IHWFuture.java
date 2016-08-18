@@ -23,7 +23,7 @@ public interface IHWFuture<T> {
 
         public static final int UNKNOWN = -1;
         public static final int OK = 200;
-        public static final int LOGGEDIN = 2001;
+        public static final int LOGGEDIN = OK;
 
         public static final int PROTOError = 400;
         public static final int DATETIMEError = 4001;

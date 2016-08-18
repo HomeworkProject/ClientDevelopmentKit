@@ -4,20 +4,15 @@ import de.mlessmann.api.annotations.API;
 import de.mlessmann.api.data.IHWCarrier;
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
-import de.mlessmann.api.data.IHWObj;
 import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.internals.data.HWFuture;
-import de.mlessmann.internals.data.HWObject;
 import de.mlessmann.internals.networking.requests.RequestMgr;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Created by Life4YourGames on 11.08.16.
@@ -158,7 +153,10 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
 
     @Override
     public void reportMgr(RequestMgr mgr) {
+        if (reqMgr != null)
+            reqMgr.unregisterListener(this);
         reqMgr = mgr;
+        reqMgr.registerListener(this);
     }
 
     //------------------------------------ IHWFutureProvider -----------------------------------------------------------

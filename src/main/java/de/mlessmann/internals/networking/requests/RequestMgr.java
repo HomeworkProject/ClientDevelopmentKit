@@ -171,6 +171,12 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
     }
 
     @API(APILevel = 3)
+    public void registerListener(IMessageListener l) {
+        if (!listeners.contains(l))
+            listeners.add(l);
+    }
+
+    @API(APILevel = 3)
     public synchronized void unregisterListener(IMessageListener l) {
 
         listeners.remove(l);

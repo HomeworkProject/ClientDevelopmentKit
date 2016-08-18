@@ -2,16 +2,14 @@ package de.mlessmann.internals.networking.requests.gethw;
 
 import de.mlessmann.api.annotations.API;
 import de.mlessmann.api.data.IHWFuture;
+import de.mlessmann.api.data.IHWFutureProvider;
 import de.mlessmann.api.data.IHWObj;
 import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
+import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.data.HWObject;
 import de.mlessmann.internals.networking.requests.RequestMgr;
-import de.mlessmann.api.data.IHWUser;
-import de.mlessmann.internals.networking.requests.login.RequestLogin;
-import de.mlessmann.internals.data.HWFuture;
-import de.mlessmann.api.data.IHWFutureProvider;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -204,7 +202,10 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
     @Override
     public void reportMgr(RequestMgr mgr) {
+        if (reqMgr != null)
+            reqMgr.unregisterListener(this);
         reqMgr = mgr;
+        reqMgr.registerListener(this);
     }
 
     //------------------------------------ IHWFutureProvider -----------------------------------------------------------
