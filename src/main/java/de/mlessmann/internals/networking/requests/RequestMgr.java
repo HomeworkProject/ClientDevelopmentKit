@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
 import java.util.*;
 
 /**
@@ -79,6 +80,10 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             socket = new Socket();
 
             socket.connect(sAddr);
+            socket.setSoTimeout(200);
+
+            reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            writer = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
 
             connErrCode = IHWFuture.ERRORCodes.OK;
 
@@ -95,26 +100,14 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
         while (!killed && !crashed) {
 
-            if (!crashed && reader == null && writer == null) {
-
-                try {
-
-                    reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-                    writer = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
-
-                } catch (IOException e) {
-
-                    crashed = true;
-                    crashRsn = e;
-
-                }
-
-            }
-
             if (!isActive())
                 return;
 
             try {
+
+                if (!requestsLocked()) {
+                    sendPendingRequests();
+                }
 
                 String ln = reader.readLine();
 
@@ -126,14 +119,12 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
                 }
 
-                if (!requestsLocked()) {
-                    sendPendingRequests();
-                }
-
             } catch (IOException e) {
 
-                crashed = true;
-                crashRsn = e;
+                if (!(e instanceof SocketTimeoutException)) {
+                    crashed = true;
+                    crashRsn = e;
+                }
 
             } catch (JSONException e) {
                 //TODO: Replace this with an integration to the HWMgr error handling system
@@ -155,14 +146,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
         cIDs.put(request, i);
         request.reportCommID(i);
 
-        if (requestsLocked())
-            requestQueue.add(request);
-        else {
-            sendRequest(request);
-
-            if (request.locksQueue())
-                requestsLockedBy = request;
-        }
+        requestQueue.add(request);
 
     }
 
