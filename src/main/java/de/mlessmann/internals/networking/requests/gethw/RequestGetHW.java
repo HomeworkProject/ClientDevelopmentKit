@@ -153,7 +153,9 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
                 ArrayList<IHWObj> list = new ArrayList<IHWObj>();
 
-                for (Object o : a) {
+                //For-Each not possible due to the org.json lib in android
+                for (int i = 0; i < a.length(); i++) {
+                    Object o = a.get(i);
                     if (o instanceof JSONObject) {
                         JSONObject obj = ((JSONObject) o);
 
