@@ -46,7 +46,7 @@ public class HWProvider implements IHWProvider {
 
     public String getAddress() {
 
-        return json.getString("0.0.0.0");
+        return json.getString("address");
 
     }
 
