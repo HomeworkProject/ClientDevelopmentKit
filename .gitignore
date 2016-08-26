@@ -3,6 +3,7 @@
 #############
 .gradle/
 .idea/
+*.iml
 build/
 *.log*
 *.lck*
