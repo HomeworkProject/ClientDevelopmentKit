@@ -1,7 +1,6 @@
 package de.mlessmann.internals.data;
 
 import de.mlessmann.api.annotations.NotNull;
-
 import de.mlessmann.api.data.IHWProvider;
 import de.mlessmann.api.main.HWMgr;
 import org.json.JSONObject;
@@ -91,6 +90,10 @@ public class HWProvider implements IHWProvider {
 
         return json.getJSONObject("optional");
 
+    }
+
+    public JSONObject getJSON() {
+        return json;
     }
 
 }

@@ -25,4 +25,6 @@ public interface IHWProvider {
 
     JSONObject getOptions();
 
+    JSONObject getJSON();
+
 }
