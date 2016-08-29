@@ -6,6 +6,7 @@ import de.mlessmann.api.data.*;
 import de.mlessmann.exceptions.StillConnectedException;
 import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.data.HWProvider;
+import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
 import de.mlessmann.internals.networking.requests.addhw.RequestAddHW;
 import de.mlessmann.internals.networking.requests.delhw.RequestDelHW;
@@ -20,7 +21,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Proxy;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +39,11 @@ public class HWMgr {
 
     //-------- Connection ----------
     private boolean connected;
-    private Socket socket;
     private RequestMgr reqMgr;
     private Thread reqThread;
+
+    //-------- Errors + Logging ----
+    private LMgr lMgr = new LMgr();
 
     //--------- Authentication ---------
 
@@ -101,7 +103,7 @@ public class HWMgr {
 
         //TODO: Implement encryption/compression/etc.
 
-        reqMgr = new RequestMgr(serverAddress, port);
+        reqMgr = new RequestMgr(lMgr, serverAddress, port);
 
         reqThread = new Thread(reqMgr);
         reqThread.start();
@@ -128,22 +130,21 @@ public class HWMgr {
 
     @API(APILevel = 2)
     public void release(boolean forced) {
-        try {
-            if (socket.isConnected()) {
-                socket.close();
-            }
-        } catch (IOException e) {
-
-            //Just abandon socket
-            //TODO: Implement error reporting
-
-        }
+        if (reqMgr == null)
+            return;
 
         reqMgr.kill();
 
-        if (!socket.isConnected() || forced)
+        if (isConnected() || forced)
             connected = false;
 
+    }
+
+    @API(APILevel = 1)
+    public boolean isConnected() {
+        if (reqMgr == null)
+            return false;
+        return reqMgr.isActive();
     }
 
     //---------------------------------------- Communication -----------------------------------------------------------
@@ -151,7 +152,7 @@ public class HWMgr {
     @API(APILevel = 1)
     public IHWFuture<Boolean> isCompatible() {
 
-        RequestVersion req = new RequestVersion();
+        RequestVersion req = new RequestVersion(lMgr);
 
         req.reportMgr(reqMgr);
         reqMgr.queueRequest(req);
@@ -163,7 +164,7 @@ public class HWMgr {
     @API(APILevel = 1)
     public IHWFuture<IHWUser> login(String grp, String usr, String auth) {
 
-        RequestLogin req = new RequestLogin();
+        RequestLogin req = new RequestLogin(lMgr);
 
         req.reportMgr(reqMgr);
         req.setGrp(grp);
@@ -179,7 +180,7 @@ public class HWMgr {
     @API(APILevel = 1)
     public IHWFuture<List<IHWObj>> getHWOn(int yyyy, int MM, int dd) {
 
-        RequestGetHW req = new RequestGetHW();
+        RequestGetHW req = new RequestGetHW(lMgr);
 
         req.reportMgr(reqMgr);
         req.setDate(yyyy, MM, dd);
@@ -193,7 +194,7 @@ public class HWMgr {
     @API(APILevel = 1)
     public IHWFuture<List<IHWObj>> getHWBetween(int yyyyFrom, int MMFrom, int ddFrom, int yyyyTo, int MMTo, int ddTo) {
 
-        RequestGetHW req = new RequestGetHW();
+        RequestGetHW req = new RequestGetHW(lMgr);
 
         req.reportMgr(reqMgr);
         req.setDates(yyyyFrom, MMFrom, ddFrom, yyyyTo, MMTo, ddTo);
@@ -208,7 +209,7 @@ public class HWMgr {
     @API(APILevel = 1)
     public IHWFuture<Boolean> addHW(IHWCarrier hw) {
 
-        RequestAddHW req = new RequestAddHW();
+        RequestAddHW req = new RequestAddHW(lMgr);
 
         req.setHW(hw);
         req.reportMgr(reqMgr);
@@ -278,7 +279,7 @@ public class HWMgr {
     @API(APILevel = 2)
     public IHWFuture<Boolean> delHW(String id, int yyyy, int MM, int dd) {
 
-        RequestDelHW req = new RequestDelHW();
+        RequestDelHW req = new RequestDelHW(lMgr);
 
         req.setID(id);
         req.setDate(yyyy, MM, dd);

@@ -8,6 +8,7 @@ import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.internals.data.HWFuture;
+import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
 import org.json.JSONObject;
 
@@ -27,10 +28,13 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
     private IHWUser result = null;
     private HWFuture<IHWUser> future;
     private RequestMgr reqMgr;
+    private LMgr lMgr;
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public RequestLogin() {
+    public RequestLogin(LMgr logger) {
+
+        lMgr = logger;
 
         genID();
 

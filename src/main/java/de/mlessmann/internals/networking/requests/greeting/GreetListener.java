@@ -2,6 +2,7 @@ package de.mlessmann.internals.networking.requests.greeting;
 
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
+import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
 import org.json.JSONObject;
 
@@ -18,10 +19,13 @@ public class GreetListener implements IRequest, IMessageListener {
     private String id;
     private int cid;
     private RequestMgr reqMgr;
+    private LMgr lMgr;
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public GreetListener() {
+    public GreetListener(LMgr logger) {
+
+        lMgr = logger;
 
         genID();
 

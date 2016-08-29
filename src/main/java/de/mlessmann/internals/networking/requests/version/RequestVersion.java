@@ -6,6 +6,7 @@ import de.mlessmann.api.data.IHWFutureProvider;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.internals.data.HWFuture;
+import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
 import de.mlessmann.util.Common;
 import org.json.JSONObject;
@@ -28,10 +29,13 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
     private Boolean isCompatible = null;
     private HWFuture<Boolean> future;
     private RequestMgr reqMgr;
+    private LMgr lMgr;
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public RequestVersion() {
+    public RequestVersion(LMgr logger) {
+
+        lMgr = logger;
 
         genID();
 

@@ -9,6 +9,7 @@ import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.data.HWObject;
+import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,10 +33,13 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
     private List<IHWObj> result = null;
     private HWFuture<List<IHWObj>> future;
     private RequestMgr reqMgr;
+    private LMgr lMgr;
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public RequestGetHW() {
+    public RequestGetHW(LMgr logger) {
+
+        lMgr = logger;
 
         genID();
 

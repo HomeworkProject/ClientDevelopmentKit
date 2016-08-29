@@ -7,6 +7,7 @@ import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.exceptions.OutOfCIDsException;
 import de.mlessmann.internals.data.HWFuture;
+import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.greeting.GreetListener;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +37,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
     private boolean crashed;
     private Exception crashRsn;
     private boolean killed = false;
+    private LMgr lMgr;
 
     private List<IMessageListener> listeners = new ArrayList<IMessageListener>();
     private List<IRequest> requestQueue = new ArrayList<IRequest>();
@@ -47,7 +49,9 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
     private Exception connResult = null;
     private int connErrCode = 0;
 
-    public RequestMgr(String serverAddr, int port) {
+    public RequestMgr(LMgr logger, String serverAddr, int port) {
+
+        lMgr = logger;
 
         this.serverAddress = serverAddr;
         this.port = port;
@@ -97,7 +101,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
         }
 
-        GreetListener gl = new GreetListener();
+        GreetListener gl = new GreetListener(lMgr);
         gl.reportMgr(this);
         requestsLockedBy = gl;
 
@@ -202,21 +206,35 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
     //--------------------------------------------- Misc. --------------------------------------------------------------
 
 
-    public boolean isCrashed() {
+    public synchronized boolean isCrashed() {
 
         return crashed;
 
     }
 
-    public boolean isActive() {
+    public synchronized boolean isActive() {
 
         return isCrashed() || socket.isConnected();
 
     }
 
-    public void kill() {
+    public synchronized void kill() {
+
+        try {
+            if (socket.isConnected()) {
+                socket.close();
+            }
+        } catch (IOException e) {
+
+            //Just abandon socket
+            //TODO: Implement error reporting
+
+        }
         killed = true;
+
     }
+
+
 
     //--------------------------------------------- Internals ----------------------------------------------------------
 
