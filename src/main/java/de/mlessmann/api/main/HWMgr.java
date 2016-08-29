@@ -134,7 +134,7 @@ public class HWMgr {
             }
         } catch (IOException e) {
 
-            //Just abbandon socket
+            //Just abandon socket
             //TODO: Implement error reporting
 
         }

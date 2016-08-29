@@ -128,8 +128,8 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
 
             if (msg.getInt("status") == 200) {
                 result = new Usr(
-                        REQ.getJSONArray("paramaters").getString(0),
-                        REQ.getJSONArray("paramarers").getString(1),
+                        REQ.getJSONArray("parameters").getString(0),
+                        REQ.getJSONArray("parameters").getString(1),
                         IHWFuture.ERRORCodes.LOGGEDIN
                 );
                 errorCode = IHWFuture.ERRORCodes.LOGGEDIN;
