@@ -120,9 +120,11 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
                 String ln = reader.readLine();
 
+                if (ln == null || ln.isEmpty()) {
+                    //TODO: Implement logging
+                }
+
                 JSONObject msg = new JSONObject(ln);
-
-
 
                 for (int i = (listeners.size() -1); i >= 0; i--) {
 
