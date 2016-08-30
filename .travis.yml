@@ -4,5 +4,8 @@ jdk:
 before_install:
 - chmod +x gradlew
 notifications:
+  email:
+    on_success: never
+    on_failure: never
   slack:
     secure: o6Z4WfpOEycJK9qjoA2GgcauHnC/hxTvzWdGEpQ003z7Y+m4yohfQ4iNpiAxITdFJhSPciEgYtSOVgQxOKbV0b7pgUJkvDi+TGhrHjHVeixZQZx9VLW96OPltMHzKEKpKxjxgYLuKtDZVLZQsREFUiCZ3h75BtuSujS6zTa4+Y5sy40efjTYyQslipFkPHweU3NcLjckgx/YQoZid3F8j4sTxLu5+ZKQ3eWH7yAU2IDK/gewMiqQG75cajMYhmpJlbYrkzwGubhy+QCJ1s9hDX+yk1h5DMFJ5OGDo9TvdqSwlzC+Myd6AEQRD2GwO18jSBXctx6FW5bs26PnnSuXYe14p1BKizTqOEZL9mlIy1p02WQuzXm/tBIBp19jEFAhtWaPkd9ArnqKWznEP2knYbGudSUFyZu7KQDmeE/cfCBMBuJIcOVFHOYz4H5roIRSjXZTVhgmaxpEh0EZg/ta0LIkUVthMiT0NLFtyeQuIdirbnmN1EXrve0PyT8ZAlj+vEiwrhO495WoXMpLlFbPXzLewNK0fpYnL+4tG1BdDMDZTij76zBf/IjvTdiS3DC6Sw+3D/BY4I0Zrg9kKCz7ZUt26/xIQFT3WIavrQpgIkZufhxXsHoSu6to2kRAmoYIYpER9k+lnjtdMiYxatEjxtUyTKykH/eIH+q3AoxD7go=
