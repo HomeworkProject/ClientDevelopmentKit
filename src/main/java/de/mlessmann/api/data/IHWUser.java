@@ -9,7 +9,4 @@ public interface IHWUser {
 
     String name();
 
-    @Deprecated
-    int loginStatus();
-
 }

@@ -3,6 +3,7 @@ package de.mlessmann.api.main;
 import de.mlessmann.api.annotations.API;
 import de.mlessmann.api.annotations.Nullable;
 import de.mlessmann.api.data.*;
+import de.mlessmann.api.logging.ILogListener;
 import de.mlessmann.exceptions.StillConnectedException;
 import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.data.HWProvider;
@@ -57,7 +58,11 @@ public class HWMgr {
      * Returns a list of listed providers.
      * @param sUrl The sources URL to use, defaults to official sources.
      * @return List\<HWProvider\> of listed providers.
+     * @deprecated Will be replaced by a multi-threaded method that will have similar signature
+     *             Will change 'throws' signature! LMgr integration impending.
+     *             This method will be removed on first major CDK release.
      */
+    @Deprecated
     @API(APILevel = 1)
     public List<IHWProvider> getAvailableProviders(@Nullable String sUrl) throws JSONException, MalformedURLException, IOException {
 
@@ -229,12 +234,43 @@ public class HWMgr {
 
     }
 
+    //-------------------------------- Logging -------------------------------------------------------------------------
+
+    /**
+     * Register a new LogListener for all cdk component messages
+     * @param l Listener
+     * @see LMgr#registerListener(ILogListener)
+     */
+    public void registerLogListener(ILogListener l) {
+        lMgr.registerListener(l);
+    }
+
+    /**
+     * Unregister a LogListener from all cdk component messages
+     * (Does not unregister from possible sub-components
+     * @param l Listener
+     * @see LMgr#unregisterListener(ILogListener)
+     */
+    public void unregisterLogListener(ILogListener l) {
+        lMgr.unregisterListener(l);
+    }
+
     //==================================================================================================================
     //======================================== API Level 2 =============================================================
     //==================================================================================================================
 
     //-------------------------------- Provider discovery --------------------------------------------------------------
-
+    /**
+     * @param sUrl
+     * @return
+     * @throws JSONException
+     * @throws MalformedURLException
+     * @throws IOException
+     * @deprecated Will be replaced by a multi-threaded method that will have similar signature
+     *             Will change 'throws' signature! LMgr integration impending.
+     *             This method will be removed on first major CDK release.
+     */
+    @Deprecated
     @API(APILevel = 2)
     public List<JSONObject> getAvailableProviderList(@Nullable String sUrl) throws JSONException, MalformedURLException, IOException {
 

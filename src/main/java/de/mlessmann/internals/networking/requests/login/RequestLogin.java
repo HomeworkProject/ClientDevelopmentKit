@@ -238,7 +238,6 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
             return name;
         }
 
-        @Override
         public int loginStatus() {
             return state;
         }
