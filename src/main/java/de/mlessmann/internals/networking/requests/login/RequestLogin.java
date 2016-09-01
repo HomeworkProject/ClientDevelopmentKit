@@ -3,11 +3,13 @@ package de.mlessmann.internals.networking.requests.login;
 import de.mlessmann.api.annotations.API;
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
+import de.mlessmann.api.data.IHWSession;
 import de.mlessmann.api.data.IHWUser;
 import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.internals.data.HWFuture;
+import de.mlessmann.internals.data.HWSession;
 import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
 import org.json.JSONObject;
@@ -20,7 +22,7 @@ import java.util.Calendar;
  */
 public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMessageListener {
 
-    static final JSONObject REQ = new JSONObject("{\n\"command\": \"login\",\n \"parameters\": [default, default, default]\n}");
+    private final JSONObject REQ = new JSONObject("{\n\"command\": \"login\",\n \"parameters\": [default, default, default]\n}");
 
     private String id;
     private int cid;
@@ -71,6 +73,13 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
     }
 
     @API(APILevel = 2)
+    public void setToken(String token) {
+        JSONObject s = new JSONObject();
+        s.put("token", token);
+        REQ.put("session", s);
+    }
+
+    @API(APILevel = 2)
     public IHWFuture<IHWUser> getFuture() {
         return this.future;
     }
@@ -109,6 +118,7 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
         result = new Usr(
                 REQ.getJSONArray("parameters").getString(0),
                 REQ.getJSONArray("parameters").getString(1),
+                null,
                 IHWFuture.ERRORCodes.UNKNOWN
         );
         errorCode = IHWFuture.ERRORCodes.UNKNOWN;
@@ -129,11 +139,19 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
         if (msg.optString("handler", "null").equals("de.mlessmann.commands.login")) {
 
             boolean unlock = false;
+            HWSession s = null;
 
             if (msg.getInt("status") == 200) {
+
+                if (msg.has("session")) {
+                    JSONObject o = msg.getJSONObject("session");
+                    s = new HWSession(o);
+                }
+
                 result = new Usr(
                         REQ.getJSONArray("parameters").getString(0),
                         REQ.getJSONArray("parameters").getString(1),
+                        s,
                         IHWFuture.ERRORCodes.LOGGEDIN
                 );
                 errorCode = IHWFuture.ERRORCodes.LOGGEDIN;
@@ -147,6 +165,7 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                     result = new Usr(
                             REQ.getJSONArray("parameters").getString(0),
                             REQ.getJSONArray("parameters").getString(1),
+                            s,
                             IHWFuture.ERRORCodes.INVALIDCREDERR
                     );
                     errorCode = IHWFuture.ERRORCodes.INVALIDCREDERR;
@@ -156,15 +175,26 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                     result = new Usr(
                             REQ.getJSONArray("parameters").getString(0),
                             REQ.getJSONArray("parameters").getString(1),
+                            s,
                             IHWFuture.ERRORCodes.NOTFOUNDERR
                     );
                     errorCode = IHWFuture.ERRORCodes.NOTFOUNDERR;
+
+                } else if (msg.getInt("status") == IHWFuture.ERRORCodes.EXPIRED){
+
+                    result = new Usr(
+                            REQ.getJSONArray("parameters").getString(0),
+                            REQ.getJSONArray("parameters").getString(1),
+                            s,
+                            IHWFuture.ERRORCodes.EXPIRED
+                    );
 
                 } else {
 
                     result = new Usr(
                             REQ.getJSONArray("parameters").getString(0),
                             REQ.getJSONArray("parameters").getString(1),
+                            s,
                             IHWFuture.ERRORCodes.UNKNOWN
                     );
                     errorCode = IHWFuture.ERRORCodes.UNKNOWN;
@@ -219,11 +249,13 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
         private String grp;
         private String name;
         private int state;
+        private HWSession session;
 
-        public Usr(String grp, String name, int state) {
+        public Usr(String grp, String name, HWSession s, int state) {
 
             this.grp = grp;
             this.name = name;
+            this.session = s;
             this.state = state;
 
         }
@@ -236,6 +268,11 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
         @Override
         public String name() {
             return name;
+        }
+
+        @Override
+        public IHWSession session() {
+            return session;
         }
 
         public int loginStatus() {

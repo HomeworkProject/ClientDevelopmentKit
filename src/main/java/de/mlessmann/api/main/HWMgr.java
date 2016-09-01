@@ -163,7 +163,6 @@ public class HWMgr {
         reqMgr.queueRequest(req);
 
         return req.getFuture();
-
     }
 
     @API(APILevel = 1)
@@ -179,7 +178,19 @@ public class HWMgr {
         reqMgr.queueRequest(req);
 
         return req.getFuture();
+    }
 
+    @API(APILevel = 1)
+    public IHWFuture<IHWUser> login(String token) {
+
+        RequestLogin req = new RequestLogin(lMgr);
+
+        req.reportMgr(reqMgr);
+        req.setToken(token);
+
+        reqMgr.queueRequest(req);
+
+        return req.getFuture();
     }
 
     @API(APILevel = 1)
@@ -193,7 +204,6 @@ public class HWMgr {
         reqMgr.queueRequest(req);
 
         return req.getFuture();
-
     }
 
     @API(APILevel = 1)
@@ -207,8 +217,6 @@ public class HWMgr {
         reqMgr.queueRequest(req);
 
         return req.getFuture();
-
-
     }
 
     @API(APILevel = 1)
@@ -221,7 +229,6 @@ public class HWMgr {
         reqMgr.queueRequest(req);
 
         return req.getFuture();
-
     }
 
     @API(APILevel = 1)
@@ -231,7 +238,6 @@ public class HWMgr {
         String id = hw.getJSON().optString("id", "null");
 
         return delHW(id, dt.optInt(0, 2000), dt.optInt(1, 1), dt.optInt(2,1));
-
     }
 
     //-------------------------------- Logging -------------------------------------------------------------------------

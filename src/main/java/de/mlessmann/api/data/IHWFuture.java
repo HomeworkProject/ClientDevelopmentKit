@@ -31,6 +31,8 @@ public interface IHWFuture<T> {
 
         public static final int LOGINREQ = 401;
         public static final int INVALIDCREDERR = 401;
+        //E.g. provided token is expired and needs to be renewed
+        public static final int EXPIRED = 4011;
 
         public static final int INSUFFPERM = 403;
         
