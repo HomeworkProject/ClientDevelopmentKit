@@ -2,8 +2,6 @@ package de.mlessmann.api.data;
 
 import de.mlessmann.api.annotations.API;
 import de.mlessmann.api.annotations.Nullable;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Created by Life4YourGames on 09.08.16.
@@ -20,8 +18,13 @@ public interface IHWObj extends IHWCarrier {
     int[] date();
 
     @Nullable
-    String getDescription(boolean fromLongSrc);
+    String getTitle();
 
-    String optDescription(boolean fromLongSrc, String d);
+    String optTitle(String def);
+
+    @Nullable
+    String getDescription();
+
+    String optDescription(String def);
 
 }

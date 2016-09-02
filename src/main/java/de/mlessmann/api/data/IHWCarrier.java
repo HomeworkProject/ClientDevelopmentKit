@@ -51,6 +51,8 @@ public interface IHWCarrier {
         private String id = null;
         private JSONObject l = null;
         private JSONObject s = null;
+        private String t;
+        private String d;
 
         public JSONObject build() {
             JSONObject r = new JSONObject();
@@ -63,12 +65,10 @@ public interface IHWCarrier {
             r.put("subject", subject);
             if (id != null)
                 r.put("id", id);
-            if (l == null)
-                l = new JSONObject();
-            r.put("long", l);
-            if (s == null)
-                s = new JSONObject();
-            r.put("short", s);
+            if (t != null)
+                r.put("title", t);
+            if (d != null)
+                r.put("desc", d);
             r.put("type", "homework");
             return r;
 
@@ -89,33 +89,13 @@ public interface IHWCarrier {
             return this;
         }
 
-        public IHWCarrier.JSONBuilder description(String desc) {
-            shortDescription(desc);
-            longDescription(desc);
+        public IHWCarrier.JSONBuilder description(String d) {
+            this.d = d;
             return this;
         }
 
-        public IHWCarrier.JSONBuilder shortDescription(String desc) {
-            if (s == null)
-                s = new JSONObject();
-            s.put("desc", desc);
-            return this;
-        }
-
-        public IHWCarrier.JSONBuilder longDescription(String desc) {
-            if (l == null)
-                l = new JSONObject();
-            l.put("desc", desc);
-            return this;
-        }
-
-        public IHWCarrier.JSONBuilder longObj(JSONObject l) {
-            this.l = l;
-            return this;
-        }
-
-        public IHWCarrier.JSONBuilder shortObj(JSONObject s) {
-            this.s = s;
+        public IHWCarrier.JSONBuilder title(String t) {
+            this.t = t;
             return this;
         }
 

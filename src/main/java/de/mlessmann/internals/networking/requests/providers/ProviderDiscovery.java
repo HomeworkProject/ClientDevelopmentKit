@@ -1,5 +1,6 @@
 package de.mlessmann.internals.networking.requests.providers;
 
+import de.mlessmann.api.annotations.Nullable;
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWProvider;
 import de.mlessmann.internals.data.HWProvider;
@@ -88,8 +89,9 @@ public class ProviderDiscovery implements Runnable {
 
     //-------------------------------- Start ---------------------------------------------------------------------------
 
-    public void requestStart() {
+    public void requestStart(@Nullable String sUrl) {
         if (!running) {
+            this.sUrl = sUrl;
             thread = new Thread(this);
             thread.start();
         }

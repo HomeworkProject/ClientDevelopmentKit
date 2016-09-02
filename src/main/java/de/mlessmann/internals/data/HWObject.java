@@ -16,9 +16,9 @@ public class HWObject implements IHWObj {
 
         j.put("id", "null");
         j.put("subject", "null");
-        j.put("date", new int[]{0,0,0});
-        j.put("long", new JSONObject());
-        j.put("short", new JSONObject());
+        j.put("date", new JSONArray());
+        j.put("title", "null");
+        j.put("desc", "null");
         j.put("dummy", true);
 
         return new HWObject(j);
@@ -49,13 +49,24 @@ public class HWObject implements IHWObj {
 
     @Override
     @Nullable
-    public String getDescription(boolean fromLongSrc) {
-        return src.getJSONObject(fromLongSrc ? "long" : "short").optString("desc", null);
+    public String getTitle() {
+        return src.optString("title", null);
     }
 
     @Override
-    public String optDescription(boolean fromLongSrc, String d) {
-        return src.getJSONObject(fromLongSrc ? "long" : "short").optString("desc", d);
+    public String optTitle(String def) {
+        return src.optString("title", def);
+    }
+
+    @Override
+    @Nullable
+    public String getDescription() {
+        return src.optString("desc", null);
+    }
+
+    @Override
+    public String optDescription(String def) {
+        return src.optString("desc", def);
     }
 
     @Override

@@ -323,7 +323,7 @@ public class HWMgr {
 
         if (providerDiscovery == null)
             providerDiscovery = new ProviderDiscovery();
-        providerDiscovery.requestStart();
+        providerDiscovery.requestStart(sUrl);
         return providerDiscovery.getJSONFuture();
 
     }
