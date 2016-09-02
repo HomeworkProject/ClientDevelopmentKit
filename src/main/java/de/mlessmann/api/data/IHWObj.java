@@ -11,11 +11,11 @@ public interface IHWObj extends IHWCarrier {
 
     boolean isDummy();
 
-    String id();
+    String getId();
 
-    String subject();
+    String getSubject();
 
-    int[] date();
+    int[] getDate();
 
     @Nullable
     String getTitle();

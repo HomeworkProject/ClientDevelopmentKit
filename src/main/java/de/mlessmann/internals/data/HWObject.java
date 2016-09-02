@@ -37,12 +37,12 @@ public class HWObject implements IHWObj {
     }
 
     @Override
-    public String id() {
+    public String getId() {
         return src.getString("id");
     }
 
     @Override
-    public int[] date() {
+    public int[] getDate() {
         JSONArray a = src.getJSONArray("date");
         return new int[]{a.getInt(0), a.getInt(1), a.getInt(2)};
     }
@@ -70,7 +70,7 @@ public class HWObject implements IHWObj {
     }
 
     @Override
-    public String subject() {
+    public String getSubject() {
         return src.getString("subject");
     }
 
