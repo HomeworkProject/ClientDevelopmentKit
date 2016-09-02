@@ -62,7 +62,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
     //------------------------------------------ HWFuture --------------------------------------------------------------
 
-    public HWFuture<Exception> getConnResult() { return fConnResult; }
+    public IHWFuture<Exception> getConnResult() { return fConnResult; }
 
     @Override
     public int getErrorCode(IHWFuture future) {
@@ -83,9 +83,8 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             InetSocketAddress sAddr = new InetSocketAddress(serverAddress, port);
 
             socket = new Socket();
-
-            socket.connect(sAddr);
             socket.setSoTimeout(200);
+            socket.connect(sAddr);
 
             reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));

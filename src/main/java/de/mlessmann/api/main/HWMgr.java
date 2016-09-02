@@ -5,7 +5,6 @@ import de.mlessmann.api.annotations.Nullable;
 import de.mlessmann.api.data.*;
 import de.mlessmann.api.logging.ILogListener;
 import de.mlessmann.exceptions.StillConnectedException;
-import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.data.HWProvider;
 import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
@@ -113,7 +112,7 @@ public class HWMgr {
     //---------------------------------------- Connection --------------------------------------------------------------
 
     @API(APILevel = 1)
-    public HWFuture<Exception> connect() throws StillConnectedException {
+    public IHWFuture<Exception> connect() throws StillConnectedException {
 
         if (connected)
             throw new StillConnectedException("Unable to connect to new server while still connected to old one!");
@@ -130,7 +129,7 @@ public class HWMgr {
     }
 
     @API(APILevel = 1)
-    public HWFuture<Exception> connect(IHWProvider provider) throws StillConnectedException{
+    public IHWFuture<Exception> connect(IHWProvider provider) throws StillConnectedException{
 
         if (connected)
             release(true);
