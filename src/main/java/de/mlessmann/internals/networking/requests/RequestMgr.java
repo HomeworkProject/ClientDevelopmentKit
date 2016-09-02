@@ -83,8 +83,9 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             InetSocketAddress sAddr = new InetSocketAddress(serverAddress, port);
 
             socket = new Socket();
-            socket.setSoTimeout(200);
+            socket.setSoTimeout(2000);
             socket.connect(sAddr);
+            socket.setSoTimeout(200);
 
             reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
@@ -139,7 +140,6 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
             } catch (JSONException e) {
                 //TODO: Replace this with an integration to the HWMgr error handling system
-                return;
             }
 
         }
