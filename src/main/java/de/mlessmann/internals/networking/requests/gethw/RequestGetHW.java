@@ -184,7 +184,7 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
                 } else if (error.equals(Errors.LOGINREQError)) {
                     errorCode = IHWFuture.ERRORCodes.LOGINREQ;
                     o = HWObject.dummy();
-                } else if (error.equals(Errors.DATETIMError)) {
+                } else if (error.equals(Errors.DATETIMEError)) {
                     errorCode = IHWFuture.ERRORCodes.DATETIMEError;
                     o = HWObject.dummy();
                 } else {

@@ -9,6 +9,7 @@ import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -64,7 +65,12 @@ public class RequestDelHW implements IRequest, IMessageListener, IHWFutureProvid
     @API(APILevel = 2)
     public void setDate(int yyyy, int MM, int dd) {
 
-        REQ.put("date", new int[]{yyyy, MM, dd});
+        JSONArray a = new JSONArray();
+        a.put(yyyy);
+        a.put(MM);
+        a.put(dd);
+
+        REQ.put("date", a);
 
     }
 
@@ -146,7 +152,7 @@ public class RequestDelHW implements IRequest, IMessageListener, IHWFutureProvid
                 errorCode = HWFuture.ERRORCodes.INSUFFPERM;
             else if (err.equals(Errors.DelHWError))
                 errorCode = HWFuture.ERRORCodes.UNKNOWN;
-            else if (err.equals(Errors.DATETIMError))
+            else if (err.equals(Errors.DATETIMEError))
                 errorCode = HWFuture.ERRORCodes.DATETIMEError;
             else {
                 errorCode = HWFuture.ERRORCodes.UNKNOWN;

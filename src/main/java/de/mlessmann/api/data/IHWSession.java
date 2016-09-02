@@ -12,7 +12,7 @@ public interface IHWSession {
     String getToken();
 
     /**
-     * [yyyy, MM, dd, hh, mm]
+     * [yyyy, MM, dd, HH, mm]
      * Determines when the token expires
      * Renewal currently not possible
      */
