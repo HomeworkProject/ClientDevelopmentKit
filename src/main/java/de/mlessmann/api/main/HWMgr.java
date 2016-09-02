@@ -13,6 +13,7 @@ import de.mlessmann.internals.networking.requests.addhw.RequestAddHW;
 import de.mlessmann.internals.networking.requests.delhw.RequestDelHW;
 import de.mlessmann.internals.networking.requests.gethw.RequestGetHW;
 import de.mlessmann.internals.networking.requests.login.RequestLogin;
+import de.mlessmann.internals.networking.requests.providers.ProviderDiscovery;
 import de.mlessmann.internals.networking.requests.version.RequestVersion;
 import de.mlessmann.util.HTTP;
 import org.json.JSONArray;
@@ -38,6 +39,9 @@ public class HWMgr {
     private int port;
     private boolean secTCP;
 
+    //ProviderDiscovery
+    private ProviderDiscovery providerDiscovery;
+
     //-------- Connection ----------
     private boolean connected;
     private RequestMgr reqMgr;
@@ -61,6 +65,8 @@ public class HWMgr {
      * @deprecated Will be replaced by a multi-threaded method that will have similar signature
      *             Will change 'throws' signature! LMgr integration impending.
      *             This method will be removed on first major CDK release.
+     *             [REPLACED BY:]
+     *             @see #getAvailableProvidersOBJ(String)
      */
     @Deprecated
     @API(APILevel = 1)
@@ -81,6 +87,12 @@ public class HWMgr {
 
         return result;
 
+    }
+
+    @API(APILevel = 1)
+    public IHWFuture<List<IHWProvider>> getAvailableProvidersOBJ(@Nullable String sUrl) {
+        getAvailableProvidersJSON(sUrl);
+        return providerDiscovery.getObjFuture();
     }
 
     /**
@@ -275,6 +287,8 @@ public class HWMgr {
      * @deprecated Will be replaced by a multi-threaded method that will have similar signature
      *             Will change 'throws' signature! LMgr integration impending.
      *             This method will be removed on first major CDK release.
+     *             [REPLACED BY:]
+     *             @see #getAvailableProvidersJSON(String)
      */
     @Deprecated
     @API(APILevel = 2)
@@ -301,6 +315,16 @@ public class HWMgr {
         }
 
         return result;
+
+    }
+
+    @API(APILevel = 2)
+    public IHWFuture<List<JSONObject>> getAvailableProvidersJSON(@Nullable String sUrl) {
+
+        if (providerDiscovery == null)
+            providerDiscovery = new ProviderDiscovery();
+        providerDiscovery.requestStart();
+        return providerDiscovery.getJSONFuture();
 
     }
 

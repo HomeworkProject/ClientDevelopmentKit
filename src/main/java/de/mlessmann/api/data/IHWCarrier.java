@@ -19,7 +19,7 @@ public interface IHWCarrier {
 
     class Builder {
 
-        static IHWCarrier.Builder builder() { return new IHWCarrier.Builder(); }
+        public static IHWCarrier.Builder builder() { return new IHWCarrier.Builder(); }
 
         private JSONObject json;
         private IHWCarrier.JSONBuilder jsonBuilder;

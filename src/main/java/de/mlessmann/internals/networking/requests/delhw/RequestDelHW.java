@@ -121,7 +121,7 @@ public class RequestDelHW implements IRequest, IMessageListener, IHWFutureProvid
     public void onMessage(JSONObject msg) {
         if (msg.optInt("commID", -1) != cid) return;
 
-        if (!msg.optString("handler", "null").equals("de.mlessmann.commands.delHW"))
+        if (!msg.optString("handler", "null").equals("de.mlessmann.commands.delhw"))
             return;
 
         int status = msg.optInt("status", 0);
