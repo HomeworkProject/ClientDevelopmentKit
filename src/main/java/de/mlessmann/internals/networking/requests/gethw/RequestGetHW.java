@@ -109,7 +109,7 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
     @Override
     public boolean locksQueue() {
-        return true;
+        return false;
     }
 
     @Override
