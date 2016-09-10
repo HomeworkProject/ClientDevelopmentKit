@@ -34,7 +34,7 @@ public class ProviderDiscovery implements Runnable {
     public void run() {
         try {
             if (sUrl == null)
-                sUrl = "http://schule.m-lessmann.de/hwserver/sources.json";
+                sUrl = "http://dev.m-lessmann.de/hwserver/providerDiscovery.json";
             String res = HTTP.GET(sUrl, proxy);
 
             JSONObject resp = new JSONObject(res);
