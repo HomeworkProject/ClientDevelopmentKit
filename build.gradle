@@ -17,7 +17,7 @@ dependencies {
     compile project(':javacommon')
 }
 
-task installDependencies(Type:Exec) {
+task installDependencies(type:Exec) {
 
     commandLine 'git clone https://github.com/MarkL4YG/javacommon.git ../javacommon'
 
