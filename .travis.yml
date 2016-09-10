@@ -3,9 +3,7 @@ jdk:
 - oraclejdk7
 before_install:
 - chmod +x gradlew
-install:
-- chmod -R +x MarkL4YG/Homework_Server_CDK/travis/*
-- ./MarkL4YG/Homework_Server_CDK/travis/install_dependencies_projects
+- git clone --depth=50 --branch=bleeding https://github.com/MarkL4YG/javacommon.git MarkL4YG/javacommon
 notifications:
   email:
     on_success: never
