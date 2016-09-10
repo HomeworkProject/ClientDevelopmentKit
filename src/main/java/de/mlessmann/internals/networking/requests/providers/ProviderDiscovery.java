@@ -78,7 +78,6 @@ public class ProviderDiscovery implements Runnable {
 
     //-------------------------------- Future --------------------------------------------------------------------------
 
-
     public IHWFuture<List<JSONObject>> getJSONFuture() {
         return jsonProvider.getFuture();
     }
