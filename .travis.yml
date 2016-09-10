@@ -2,7 +2,7 @@ language: java
 jdk:
 - oraclejdk7
 before_install:
-- chmod -R MarkL4YG/Homework_Server_CDK/travis/*
+- chmod -R +x MarkL4YG/Homework_Server_CDK/travis/*
 - ./MarkL4YG/Homework_Server_CDK/travis/install_dependencies_projects
 - chmod +x gradlew
 notifications:
