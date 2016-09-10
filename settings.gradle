@@ -1,4 +1,4 @@
 rootProject.name = 'hwserver_cdk'
 
 include 'javacommon'
-project(':javacommon').projectDir = new File('../javacommon')
+project(':javacommon')

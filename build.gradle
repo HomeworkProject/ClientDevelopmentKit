@@ -16,9 +16,3 @@ dependencies {
     compile 'org.json:json:20160212'
     compile project(':javacommon')
 }
-
-task installDependencies(type:Exec) {
-
-    commandLine 'git clone https://github.com/MarkL4YG/javacommon.git ../javacommon'
-
-}
