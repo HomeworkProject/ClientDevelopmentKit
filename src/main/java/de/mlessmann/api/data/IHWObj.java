@@ -1,7 +1,7 @@
 package de.mlessmann.api.data;
 
-import de.mlessmann.api.annotations.API;
-import de.mlessmann.api.annotations.Nullable;
+import de.mlessmann.common.annotations.API;
+import de.mlessmann.common.annotations.Nullable;
 
 /**
  * Created by Life4YourGames on 09.08.16.

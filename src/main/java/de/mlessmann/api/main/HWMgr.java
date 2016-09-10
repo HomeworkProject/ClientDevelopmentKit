@@ -1,9 +1,10 @@
 package de.mlessmann.api.main;
 
-import de.mlessmann.api.annotations.API;
-import de.mlessmann.api.annotations.Nullable;
 import de.mlessmann.api.data.*;
 import de.mlessmann.api.logging.ILogListener;
+import de.mlessmann.common.HTTP;
+import de.mlessmann.common.annotations.API;
+import de.mlessmann.common.annotations.Nullable;
 import de.mlessmann.exceptions.StillConnectedException;
 import de.mlessmann.internals.data.HWProvider;
 import de.mlessmann.internals.logging.LMgr;
@@ -14,7 +15,6 @@ import de.mlessmann.internals.networking.requests.gethw.RequestGetHW;
 import de.mlessmann.internals.networking.requests.login.RequestLogin;
 import de.mlessmann.internals.networking.requests.providers.ProviderDiscovery;
 import de.mlessmann.internals.networking.requests.version.RequestVersion;
-import de.mlessmann.util.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

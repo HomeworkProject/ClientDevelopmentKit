@@ -1,10 +1,10 @@
 package de.mlessmann.internals.networking.requests.providers;
 
-import de.mlessmann.api.annotations.Nullable;
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWProvider;
+import de.mlessmann.common.HTTP;
+import de.mlessmann.common.annotations.Nullable;
 import de.mlessmann.internals.data.HWProvider;
-import de.mlessmann.util.HTTP;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

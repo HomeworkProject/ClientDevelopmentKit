@@ -1,6 +1,6 @@
 package de.mlessmann.api.data;
 
-import de.mlessmann.api.annotations.API;
+import de.mlessmann.common.annotations.API;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

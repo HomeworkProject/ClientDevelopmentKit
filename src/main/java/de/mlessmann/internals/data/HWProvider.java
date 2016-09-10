@@ -1,8 +1,8 @@
 package de.mlessmann.internals.data;
 
-import de.mlessmann.api.annotations.NotNull;
 import de.mlessmann.api.data.IHWProvider;
 import de.mlessmann.api.main.HWMgr;
+import de.mlessmann.common.annotations.NotNull;
 import org.json.JSONObject;
 
 /**

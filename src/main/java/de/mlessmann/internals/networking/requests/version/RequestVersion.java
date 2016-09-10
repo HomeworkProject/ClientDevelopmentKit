@@ -1,10 +1,10 @@
 package de.mlessmann.internals.networking.requests.version;
 
-import de.mlessmann.api.annotations.API;
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
+import de.mlessmann.common.annotations.API;
 import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
