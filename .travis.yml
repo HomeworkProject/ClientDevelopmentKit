@@ -3,7 +3,6 @@ jdk:
 - oraclejdk7
 before_install:
 - chmod +x gradlew
-- git clone --depth=50 --branch=bleeding https://github.com/MarkL4YG/javacommon.git ../javacommon
 notifications:
   email:
     on_success: never
