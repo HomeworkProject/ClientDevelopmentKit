@@ -2,15 +2,18 @@ package de.mlessmann.internals.networking.requests.providers;
 
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWProvider;
-import de.mlessmann.common.HTTP;
+import de.mlessmann.api.logging.LogLevel;
 import de.mlessmann.common.annotations.Nullable;
 import de.mlessmann.internals.data.HWProvider;
+import de.mlessmann.internals.logging.LMgr;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+
+import static de.mlessmann.common.HTTP.GET;
 
 /**
  * Created by Life4YourGames on 02.09.16.
@@ -24,10 +27,12 @@ public class ProviderDiscovery implements Runnable {
     private Proxy proxy;
     private boolean running = false;
     private Thread thread = null;
+    private LMgr lmgr;
 
-    public ProviderDiscovery() {
+    public ProviderDiscovery(LMgr lmgr) {
         jsonProvider = new FutureProvider<List<JSONObject>>();
         objProvider = new FutureProvider<List<IHWProvider>>();
+        this.lmgr = lmgr;
     }
 
     @Override
@@ -35,7 +40,7 @@ public class ProviderDiscovery implements Runnable {
         try {
             if (sUrl == null)
                 sUrl = "http://dev.m-lessmann.de/hwserver/providerDiscovery.json";
-            String res = HTTP.GET(sUrl, proxy);
+            String res = GET(sUrl, proxy);
 
             JSONObject resp = new JSONObject(res);
             JSONArray serverList = resp.getJSONArray("servers");
@@ -70,7 +75,8 @@ public class ProviderDiscovery implements Runnable {
         } catch (Exception e) {
             jsonProvider.setErrorCode(IHWFuture.ERRORCodes.UNKNOWN);
             objProvider.setErrorCode(IHWFuture.ERRORCodes.UNKNOWN);
-            //TODO:Implement error handler!
+            lmgr.sendLog(this, LogLevel.SEVERE, "Unable to perform ProviderDiscovery: " + e.toString());
+            lmgr.sendLog(this, LogLevel.SEVERE, e);
         }
         running = false;
         thread = null;

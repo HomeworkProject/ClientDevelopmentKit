@@ -145,8 +145,8 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
 
     @Override
-    public void onMessage(JSONObject msg) {
-        if (msg.optInt("commID", -1) != cid) return;
+    public boolean onMessage(JSONObject msg) {
+        if (msg.optInt("commID", -1) != cid) return false;
 
         if (msg.optString("handler", "null").equals("de.mlessmann.commands.gethw")) {
 
@@ -170,6 +170,7 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
                 errorCode = IHWFuture.ERRORCodes.OK;
                 result = list;
                 future.pokeListeners();
+                return true;
 
             } else if (msg.optString("payload_type", "null").equals("error")) {
 
@@ -199,11 +200,11 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
                 reqMgr.unregisterListener(this);
                 reqMgr.unregisterRequest(this);
                 future.pokeListeners();
-
+                return true;
             }
 
         }
-
+        return false;
     }
 
     @Override

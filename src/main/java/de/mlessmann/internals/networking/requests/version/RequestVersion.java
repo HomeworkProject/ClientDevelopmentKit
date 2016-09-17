@@ -4,11 +4,11 @@ import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
+import de.mlessmann.common.Common;
 import de.mlessmann.common.annotations.API;
 import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
-import de.mlessmann.util.Common;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -103,7 +103,7 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
 
 
     @Override
-    public void onMessage(JSONObject msg) {
+    public boolean onMessage(JSONObject msg) {
         if (msg.optString("handler", "null").equals("de.mlessmann.commands.getProtocolVersion")) {
 
             String version = msg.getString("protoVersion");
@@ -115,7 +115,9 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
             reqMgr.unregisterRequest(this);
             //reqMgr.unlockQueue(this);
             future.pokeListeners();
+            return true;
         }
+        return false;
     }
 
     @Override

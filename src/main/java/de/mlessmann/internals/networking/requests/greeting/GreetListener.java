@@ -24,22 +24,16 @@ public class GreetListener implements IRequest, IMessageListener {
     //------------------------------------------------------------------------------------------------------------------
 
     public GreetListener(LMgr logger) {
-
         lMgr = logger;
-
         genID();
-
     }
 
 
     private void genID() {
-
         id = this.toString();
-
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         id = id + sdf.format(cal.getTime());
-
     }
 
     //------------------------------------- IRequest -------------------------------------------------------------------
@@ -83,17 +77,16 @@ public class GreetListener implements IRequest, IMessageListener {
 
 
     @Override
-    public void onMessage(JSONObject msg) {
+    public boolean onMessage(JSONObject msg) {
         if (msg.optInt("commID", -1) == 1) {
-
             if (msg.optInt("status", -1) == 200) {
-
                 reqMgr.unregisterListener(this);
                 reqMgr.unregisterRequest(this);
                 //reqMgr.unlockQueue(this);
-
             }
+            return true;
         }
+        return false;
     }
 
     @Override

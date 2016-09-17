@@ -7,14 +7,21 @@ import de.mlessmann.api.logging.IHWLogContext;
  */
 public class LogContext implements IHWLogContext {
 
+    private Object sender;
     private int level;
     private String type;
     private Object payload;
 
-    public LogContext(int level, String type, Object payload) {
+    public LogContext(Object sender, int level, String type, Object payload) {
+        this.sender = sender;
         this.level = level;
         this.type = type;
         this.payload = payload;
+    }
+
+    @Override
+    public Object getSender() {
+        return sender;
     }
 
     @Override

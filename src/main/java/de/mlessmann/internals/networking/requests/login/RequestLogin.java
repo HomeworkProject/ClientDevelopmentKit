@@ -133,21 +133,17 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
 
 
     @Override
-    public void onMessage(JSONObject msg) {
-        if (msg.optInt("commID", -1) != cid) return;
+    public boolean onMessage(JSONObject msg) {
+        if (msg.optInt("commID", -1) != cid) return false;
 
         if (msg.optString("handler", "null").equals("de.mlessmann.commands.login")) {
-
             boolean unlock = false;
             HWSession s = null;
-
             if (msg.getInt("status") == 200) {
-
                 if (msg.has("session")) {
                     JSONObject o = msg.getJSONObject("session");
                     s = new HWSession(o);
                 }
-
                 result = new Usr(
                         REQ.getJSONArray("parameters").getString(0),
                         REQ.getJSONArray("parameters").getString(1),
@@ -156,11 +152,8 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                 );
                 errorCode = IHWFuture.ERRORCodes.LOGGEDIN;
                 unlock = true;
-
             } else if (msg.optString("payload_type", "null").equals("error")) {
-
                 JSONObject e = msg.getJSONObject("payload");
-
                 if (e.optString("error", "null").equals(Errors.InvCredError)) {
                     result = new Usr(
                             REQ.getJSONArray("parameters").getString(0),
@@ -200,19 +193,17 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                     errorCode = IHWFuture.ERRORCodes.UNKNOWN;
 
                 }
-
                 unlock = true;
-
             }
-
             if (unlock) {
                 //reqMgr.unlockQueue(this);
                 reqMgr.unregisterListener(this);
                 reqMgr.unregisterRequest(this);
                 future.pokeListeners();
+                return true;
             }
         }
-
+        return false;
     }
 
     @Override

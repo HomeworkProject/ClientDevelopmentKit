@@ -70,22 +70,15 @@ public class HWMgr {
     @Deprecated
     @API(APILevel = 1)
     public List<IHWProvider> getAvailableProviders(@Nullable String sUrl) throws JSONException, MalformedURLException, IOException {
-
         List<JSONObject> providerList = getAvailableProviderList(sUrl);
-
         ArrayList<IHWProvider> result = new ArrayList<IHWProvider>();
-
         for (JSONObject o : providerList) {
-
             IHWProvider p = new HWProvider(o);
-
             if (p.isValid())
                 result.add(p);
 
         }
-
         return result;
-
     }
 
     @API(APILevel = 1)
@@ -103,27 +96,20 @@ public class HWMgr {
 
     @API(APILevel = 1)
     public void setProvider(IHWProvider p) throws StillConnectedException {
-
         setServerAddress(p.getAddress());
         setPort(p.getPort());
-
     }
 
     //---------------------------------------- Connection --------------------------------------------------------------
 
     @API(APILevel = 1)
     public IHWFuture<Exception> connect() throws StillConnectedException {
-
         if (connected)
             throw new StillConnectedException("Unable to connect to new server while still connected to old one!");
-
         //TODO: Implement encryption/compression/etc.
-
         reqMgr = new RequestMgr(lMgr, serverAddress, port);
-
         reqThread = new Thread(reqMgr);
         reqThread.start();
-
         return reqMgr.getConnResult();
 
     }
@@ -321,7 +307,7 @@ public class HWMgr {
     public IHWFuture<List<JSONObject>> getAvailableProvidersJSON(@Nullable String sUrl) {
 
         if (providerDiscovery == null)
-            providerDiscovery = new ProviderDiscovery();
+            providerDiscovery = new ProviderDiscovery(lMgr);
         providerDiscovery.requestStart(sUrl);
         return providerDiscovery.getJSONFuture();
 
@@ -343,17 +329,12 @@ public class HWMgr {
 
     @API(APILevel = 2)
     public IHWFuture<Boolean> delHW(String id, int yyyy, int MM, int dd) {
-
         RequestDelHW req = new RequestDelHW(lMgr);
-
         req.setID(id);
         req.setDate(yyyy, MM, dd);
-
         req.reportMgr(reqMgr);
         reqMgr.queueRequest(req);
-
         return req.getFuture();
-
     }
 
 }

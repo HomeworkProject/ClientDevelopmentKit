@@ -112,11 +112,11 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
 
 
     @Override
-    public void onMessage(JSONObject msg) {
-        if (msg.optInt("commID", -1) != cid) return;
+    public boolean onMessage(JSONObject msg) {
+        if (msg.optInt("commID", -1) != cid) return false;
 
         if (!msg.optString("handler", "null").equals("de.mlessmann.commands.addhw"))
-            return;
+            return false;
 
         int status = msg.optInt("status", 0);
         if (status == 201) {
@@ -124,7 +124,7 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
             future.pokeListeners();
             reqMgr.unregisterListener(this);
             reqMgr.unregisterRequest(this);
-            return;
+            return true;
         }
 
         if (msg.optString("payload_type", "null").equals("error")) {
@@ -150,9 +150,9 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
             reqMgr.unregisterListener(this);
             reqMgr.unregisterRequest(this);
             future.pokeListeners();
-
+            return true;
         }
-
+        return false;
     }
 
     @Override

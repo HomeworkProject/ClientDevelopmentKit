@@ -8,7 +8,11 @@ import org.json.JSONObject;
  */
 public interface IMessageListener {
 
-    void onMessage(JSONObject msg);
+    /**
+     * If the message has been handled by this listener return true;
+     * @return Whether this Listener processed some information from the message
+     */
+    boolean onMessage(JSONObject msg);
 
     void reportMgr(RequestMgr mgr);
 

@@ -31,23 +31,23 @@ public class LMgr {
 
     }
 
-    public synchronized void sendLog(int level, String msg) {
-        LogContext c = new LogContext(level, LOGMESSAGE, msg);
+    public synchronized void sendLog(Object sender, int level, String msg) {
+        LogContext c = new LogContext(sender, level, LOGMESSAGE, msg);
         sendLog(c);
     }
 
-    public synchronized void cdk_sendLog(int level, String msg) {
-        LogContext c = new LogContext(level, CDKMSG, msg);
+    public synchronized void cdk_sendLog(Object sender, int level, String msg) {
+        LogContext c = new LogContext(sender, level, CDKMSG, msg);
         sendLog(c);
     }
 
-    public synchronized void sendLog(int level, Exception e) {
-        LogContext c = new LogContext(level, EXC, e);
+    public synchronized void sendLog(Object sender, int level, Exception e) {
+        LogContext c = new LogContext(sender, level, EXC, e);
         sendLog(c);
     }
 
-    public synchronized void cdk_sendLog(int level, Exception e) {
-        LogContext c = new LogContext(level, CDKEXC, e);
+    public synchronized void cdk_sendLog(Object sender, int level, Exception e) {
+        LogContext c = new LogContext(sender, level, CDKEXC, e);
         sendLog(c);
     }
 

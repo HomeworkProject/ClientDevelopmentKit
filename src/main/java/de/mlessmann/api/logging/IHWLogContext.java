@@ -22,6 +22,11 @@ package de.mlessmann.api.logging;
 public interface IHWLogContext {
 
     /**
+     * Sender of the LogEntry
+     */
+    Object getSender();
+
+    /**
      * Payload of the context can e.g. be a String, an Exception or sth. else
      * @see #getType() for further info
      */
