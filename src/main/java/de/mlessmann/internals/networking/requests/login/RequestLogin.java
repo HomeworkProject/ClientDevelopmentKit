@@ -181,6 +181,7 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                             s,
                             IHWFuture.ERRORCodes.EXPIRED
                     );
+                    errorCode = IHWFuture.ERRORCodes.EXPIRED;
 
                 } else {
 
