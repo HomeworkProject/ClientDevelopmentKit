@@ -12,6 +12,7 @@ import de.mlessmann.internals.networking.requests.RequestMgr;
 import de.mlessmann.internals.networking.requests.addhw.RequestAddHW;
 import de.mlessmann.internals.networking.requests.delhw.RequestDelHW;
 import de.mlessmann.internals.networking.requests.gethw.RequestGetHW;
+import de.mlessmann.internals.networking.requests.list.RequestList;
 import de.mlessmann.internals.networking.requests.login.RequestLogin;
 import de.mlessmann.internals.networking.requests.providers.ProviderDiscovery;
 import de.mlessmann.internals.networking.requests.version.RequestVersion;
@@ -156,6 +157,15 @@ public class HWMgr {
 
         RequestVersion req = new RequestVersion(lMgr);
 
+        req.reportMgr(reqMgr);
+        reqMgr.queueRequest(req);
+
+        return req.getFuture();
+    }
+
+    @API(APILevel = 1)
+    public IHWFuture<IHWGroupMapping> getGroups() {
+        RequestList req = new RequestList(lMgr);
         req.reportMgr(reqMgr);
         reqMgr.queueRequest(req);
 

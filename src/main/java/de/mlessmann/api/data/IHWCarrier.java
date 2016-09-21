@@ -11,7 +11,7 @@ public interface IHWCarrier {
 
     //------------------------- METHODS ---------------------------------
 
-    @API
+    @API(APILevel = 2)
     JSONObject getJSON();
 
     //------------------------- Sub classes -----------------------------
