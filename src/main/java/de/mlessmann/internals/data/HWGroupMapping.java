@@ -5,10 +5,7 @@ import de.mlessmann.common.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Life4YourGames on 21.09.16.
@@ -30,13 +27,14 @@ public class HWGroupMapping implements IHWGroupMapping {
     public Map<String, List<String>> getMapping() {
         Map<String, List<String>> mapping = new HashMap<String, List<String>>();
 
-        while (json.keys().hasNext()) {
-            String k = json.keys().next();
+        Iterator<String> i = json.keys();
+        while (i.hasNext()) {
+            String k = i.next();
             JSONArray a = json.optJSONArray(k);
             if (a!=null) {
                 List<String> users = new ArrayList<String>();
-                for (int i = 0; i<a.length(); i++) {
-                    Object o = a.get(i);
+                for (int I = 0; I<a.length(); I++) {
+                    Object o = a.get(I);
                     if (o instanceof String)
                         users.add(((String) o));
                 }
@@ -50,8 +48,9 @@ public class HWGroupMapping implements IHWGroupMapping {
     public List<String> getGroups() {
         List<String> groups = new ArrayList<String>();
 
-        while (json.keys().hasNext()) {
-            String k = json.keys().next();
+        Iterator<String> i = json.keys();
+        while (i.hasNext()) {
+            String k = i.next();
             JSONArray a = json.optJSONArray(k);
             if (a!=null) {
                 groups.add(k);
@@ -65,15 +64,16 @@ public class HWGroupMapping implements IHWGroupMapping {
     public List<String> getUsersFor(String groupName) {
         List<String> users = null;
 
-        while (json.keys().hasNext()) {
-            String k = json.keys().next();
+        Iterator<String> i = json.keys();
+        while (i.hasNext()) {
+            String k = i.next();
             if(!k.equals(groupName))
                 continue;
             JSONArray a = json.optJSONArray(k);
             if (a!=null) {
                 users = new ArrayList<String>();
-                for (int i = 0; i<a.length(); i++) {
-                    Object o = a.get(i);
+                for (int I = 0; I<a.length(); I++) {
+                    Object o = a.get(I);
                     if (o instanceof String)
                         users.add(((String) o));
                 }
