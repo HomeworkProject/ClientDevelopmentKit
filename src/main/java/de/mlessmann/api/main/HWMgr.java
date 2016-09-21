@@ -164,8 +164,10 @@ public class HWMgr {
     }
 
     @API(APILevel = 1)
-    public IHWFuture<IHWGroupMapping> getGroups() {
+    public IHWFuture<IHWGroupMapping> getGroups(@Nullable String onlyThisGroup) {
         RequestList req = new RequestList(lMgr);
+        if (onlyThisGroup!=null && !onlyThisGroup.isEmpty())
+            req.setGrp(onlyThisGroup);
         req.reportMgr(reqMgr);
         reqMgr.queueRequest(req);
 
