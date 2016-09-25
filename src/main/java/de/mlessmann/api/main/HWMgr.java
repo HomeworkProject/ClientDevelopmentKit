@@ -135,12 +135,10 @@ public class HWMgr {
     public void release(boolean forced) {
         if (reqMgr == null)
             return;
-
         reqMgr.kill();
 
-        if (isConnected() || forced)
+        if (!isConnected() || forced)
             connected = false;
-
     }
 
     @API(APILevel = 1)
