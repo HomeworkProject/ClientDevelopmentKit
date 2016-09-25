@@ -121,8 +121,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
                 String ln = reader.readLine();
 
                 if (ln == null || ln.isEmpty()) {
-                    //TODO: Implement logging
-                    continue;
+                    lMgr.reportClosed(false);
                 }
                 JSONObject msg = new JSONObject(ln);
 
@@ -138,10 +137,9 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
             } catch (IOException e) {
                 if (!(e instanceof SocketTimeoutException)) {
-                    crashed = true;
-                    crashRsn = e;
                     lMgr.cdk_sendLog(this, SEVERE, "IOException on reading socket");
                     lMgr.cdk_sendLog(this, SEVERE, e);
+                    lMgr.reportClosed(true);
                 }
             } catch (JSONException e) {
                 lMgr.cdk_sendLog(this, WARNING, "JSONException on parsing message");
@@ -217,6 +215,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             //Just abandon socket
         }
         killed = true;
+        lMgr.reportClosed(false);
     }
 
     //--------------------------------------------- Internals ----------------------------------------------------------
@@ -253,6 +252,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             r.reportFail(e);
             lMgr.sendLog(this, SEVERE, "Error sending request " + r.getUniqueID());
             lMgr.sendLog(this, SEVERE, e);
+            lMgr.reportClosed(true);
         }
     }
 

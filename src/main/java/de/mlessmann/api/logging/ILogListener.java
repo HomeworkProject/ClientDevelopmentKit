@@ -11,4 +11,8 @@ public interface ILogListener {
      */
     void onMessage(IHWLogContext context);
 
+    /**
+     * Called by reqMgr when connection is being detected as closed
+     */
+    void onConnectionLost(boolean byException);
 }

@@ -51,6 +51,13 @@ public class LMgr {
         sendLog(c);
     }
 
+    public synchronized void reportClosed(boolean byException) {
+        for (int i = listeners.size() - 1; i >= 0 ; i--) {
+            ILogListener l = listeners.get(i);
+            l.onConnectionLost(byException);
+        }
+    }
+
     //----------------------------------- Register --------------------------------------------
 
     /**
