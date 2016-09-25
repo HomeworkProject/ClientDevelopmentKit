@@ -116,6 +116,10 @@ public class RequestList implements IRequest, IHWFutureProvider<IHWGroupMapping>
                 }
                 result = mapping;
                 errorCode = mapping!=null ? IHWFuture.ERRORCodes.OK : IHWFuture.ERRORCodes.UNKNOWN;
+                reqMgr.unregisterListener(this);
+                reqMgr.unregisterRequest(this);
+                future.pokeListeners();
+                return true;
 
             } else if (msg.optString("payload_type", "null").equals("error")) {
                 JSONObject e = msg.getJSONObject("payload");
