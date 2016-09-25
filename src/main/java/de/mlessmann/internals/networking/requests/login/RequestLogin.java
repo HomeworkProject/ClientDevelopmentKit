@@ -122,6 +122,7 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
                 IHWFuture.ERRORCodes.UNKNOWN
         );
         errorCode = IHWFuture.ERRORCodes.UNKNOWN;
+        future.pokeListeners();
     }
 
     @Override
