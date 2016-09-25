@@ -26,5 +26,10 @@ public enum CloseReason {
     /**
      * Connection has been closed by the remote host
      */
-    LOST
+    LOST,
+
+    /**
+     * Timeout is only used by the #connect future
+     */
+    TIMEOUT
 }

@@ -88,8 +88,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             InetSocketAddress sAddr = new InetSocketAddress(serverAddress, port);
 
             socket = new Socket();
-            socket.setSoTimeout(2000);
-            socket.connect(sAddr);
+            socket.connect(sAddr, 2000);
             socket.setSoTimeout(200);
 
             reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
@@ -98,12 +97,15 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             connErrCode = IHWFuture.ERRORCodes.OK;
 
         } catch (IOException e) {
-
-            connErrCode = IHWFuture.ERRORCodes.UNKNOWN;
-            crashed = true;
-            crashRsn = e;
+            if (e instanceof SocketTimeoutException) {
+                connErrCode = IHWFuture.ERRORCodes.CLOSED;
+                connError = CloseReason.TIMEOUT;
+            } else {
+                connError = e;
+                connErrCode = IHWFuture.ERRORCodes.UNKNOWN;
+                crashed = true;
+            }
             connResult = e;
-
         }
 
         GreetListener gl = new GreetListener(lMgr);
