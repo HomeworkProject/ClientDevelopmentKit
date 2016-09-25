@@ -119,7 +119,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
                 String ln = reader.readLine();
 
                 if (ln == null || ln.isEmpty()) {
-                    lMgr.reportClosed(false);
+                    repClose(false);
                 }
                 JSONObject msg = new JSONObject(ln);
 
@@ -137,7 +137,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
                 if (!(e instanceof SocketTimeoutException)) {
                     lMgr.cdk_sendLog(this, SEVERE, "IOException on reading socket");
                     lMgr.cdk_sendLog(this, SEVERE, e);
-                    lMgr.reportClosed(true);
+                    repClose(true);
                 }
             } catch (JSONException e) {
                 lMgr.cdk_sendLog(this, WARNING, "JSONException on parsing message");
@@ -196,6 +196,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
     private void repClose(boolean byException) {
         for (int i = (listeners.size() -1); i >= 0; i--)
             listeners.get(i).onClosed(byException);
+        lMgr.reportClosed(byException);
     }
 
     public synchronized boolean isCrashed() {
@@ -217,7 +218,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             //Just abandon socket
         }
         killed = true;
-        lMgr.reportClosed(false);
+        repClose(false);
     }
 
     //--------------------------------------------- Internals ----------------------------------------------------------
@@ -254,7 +255,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             r.reportFail(e);
             lMgr.sendLog(this, SEVERE, "Error sending request " + r.getUniqueID());
             lMgr.sendLog(this, SEVERE, e);
-            lMgr.reportClosed(true);
+            repClose(true);
         }
     }
 
