@@ -75,6 +75,10 @@ public class GreetListener implements IRequest, IMessageListener {
 
     //------------------------------------ IMessageListener ------------------------------------------------------------
 
+    @Override
+    public void onClosed(boolean byException) {
+        //Don't care
+    }
 
     @Override
     public boolean onMessage(JSONObject msg) {

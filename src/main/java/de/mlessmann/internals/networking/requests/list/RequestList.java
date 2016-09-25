@@ -64,6 +64,13 @@ public class RequestList implements IRequest, IHWFutureProvider<IHWGroupMapping>
     //------------------------------------- IRequest -------------------------------------------------------------------
 
     @Override
+    public void onClosed(boolean byException) {
+        result = null;
+        errorCode = IHWFuture.ERRORCodes.CLOSED;
+        future.pokeListeners();
+    }
+
+    @Override
     public String getUniqueID() {
         return id;
     }

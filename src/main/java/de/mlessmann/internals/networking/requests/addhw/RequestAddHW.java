@@ -110,6 +110,12 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
 
     //------------------------------------ IMessageListener ------------------------------------------------------------
 
+    @Override
+    public void onClosed(boolean byException) {
+        result = null;
+        errorCode = IHWFuture.ERRORCodes.CLOSED;
+        future.pokeListeners();
+    }
 
     @Override
     public boolean onMessage(JSONObject msg) {

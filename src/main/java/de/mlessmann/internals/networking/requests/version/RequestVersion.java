@@ -101,6 +101,12 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
 
     //------------------------------------ IMessageListener ------------------------------------------------------------
 
+    @Override
+    public void onClosed(boolean byException) {
+        isCompatible = false;
+        errorCode = IHWFuture.ERRORCodes.CLOSED;
+        future.pokeListeners();
+    }
 
     @Override
     public boolean onMessage(JSONObject msg) {

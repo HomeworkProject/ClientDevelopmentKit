@@ -21,6 +21,7 @@ public interface IHWFuture<T> {
 
     public class ERRORCodes {
 
+        public static final int CLOSED = -2;
         public static final int UNKNOWN = -1;
         public static final int OK = 200;
         public static final int LOGGEDIN = OK;

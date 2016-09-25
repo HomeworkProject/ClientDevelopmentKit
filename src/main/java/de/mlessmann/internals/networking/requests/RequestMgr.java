@@ -79,9 +79,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
     //------------------------------------------ Main Loop -------------------------------------------------------------
 
     public void run() {
-
         try {
-
             InetSocketAddress sAddr = new InetSocketAddress(serverAddress, port);
 
             socket = new Socket();
@@ -195,6 +193,10 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
     //--------------------------------------------- Misc. --------------------------------------------------------------
 
+    private void repClose(boolean byException) {
+        for (int i = (listeners.size() -1); i >= 0; i--)
+            listeners.get(i).onClosed(byException);
+    }
 
     public synchronized boolean isCrashed() {
         return crashed;
