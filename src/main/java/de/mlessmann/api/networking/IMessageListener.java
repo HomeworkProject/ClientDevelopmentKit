@@ -16,5 +16,5 @@ public interface IMessageListener {
 
     void reportMgr(RequestMgr mgr);
 
-    void onClosed(boolean byException);
+    void onClosed(CloseReason rsn);
 }

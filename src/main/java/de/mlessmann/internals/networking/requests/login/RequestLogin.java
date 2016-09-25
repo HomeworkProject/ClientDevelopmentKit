@@ -4,6 +4,7 @@ import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
 import de.mlessmann.api.data.IHWSession;
 import de.mlessmann.api.data.IHWUser;
+import de.mlessmann.api.networking.CloseReason;
 import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
@@ -26,6 +27,7 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
 
     private String id;
     private int cid;
+    private Object error = null;
     private int errorCode = 0;
     private IHWUser result = null;
     private HWFuture<IHWUser> future;
@@ -35,13 +37,9 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
     //------------------------------------------------------------------------------------------------------------------
 
     public RequestLogin(LMgr logger) {
-
         lMgr = logger;
-
         genID();
-
         this.future = new HWFuture<IHWUser>(this);
-
     }
 
 
@@ -133,8 +131,9 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
     //------------------------------------ IMessageListener ------------------------------------------------------------
 
     @Override
-    public void onClosed(boolean byException) {
+    public void onClosed(CloseReason rsn) {
         result = null;
+        error = rsn;
         errorCode = IHWFuture.ERRORCodes.CLOSED;
         future.pokeListeners();
     }
@@ -239,6 +238,14 @@ public class RequestLogin implements IRequest, IHWFutureProvider<IHWUser>, IMess
             return errorCode;
         else
             return 0;
+    }
+
+    @Override
+    public Object getError(IHWFuture future) {
+        if (future == this.future)
+            return error;
+        else
+            return null;
     }
 
     //------------------------------------- Private IHWUser ------------------------------------------------------------

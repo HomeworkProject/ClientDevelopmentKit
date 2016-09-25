@@ -23,7 +23,7 @@ public class HWFuture<T> implements IHWFuture<T> {
     }
 
     public boolean isDone() {
-        return isPresent() || errorCode() != 0;
+        return isPresent() || getErrorCode() != 0;
     }
 
     public boolean isPresent() {
@@ -32,10 +32,12 @@ public class HWFuture<T> implements IHWFuture<T> {
 
     }
 
-    public int errorCode() {
-
+    public int getErrorCode() {
         return provider.getErrorCode(this);
+    }
 
+    public Object getError() {
+        return provider.getError(this);
     }
 
     public T get() throws NoSuchElementException {

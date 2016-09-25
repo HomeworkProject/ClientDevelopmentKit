@@ -3,6 +3,7 @@ package de.mlessmann.internals.networking.requests.addhw;
 import de.mlessmann.api.data.IHWCarrier;
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
+import de.mlessmann.api.networking.CloseReason;
 import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
@@ -25,6 +26,7 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
     private String id;
     private int cid;
     private int errorCode = 0;
+    private Object error = null;
     private Boolean result = null;
     private HWFuture<Boolean> future;
     private RequestMgr reqMgr;
@@ -111,8 +113,9 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
     //------------------------------------ IMessageListener ------------------------------------------------------------
 
     @Override
-    public void onClosed(boolean byException) {
+    public void onClosed(CloseReason rsn) {
         result = null;
+        error = rsn;
         errorCode = IHWFuture.ERRORCodes.CLOSED;
         future.pokeListeners();
     }
@@ -188,4 +191,11 @@ public class RequestAddHW implements IRequest, IMessageListener, IHWFutureProvid
             return 0;
     }
 
+    @Override
+    public Object getError(IHWFuture future) {
+        if (future == this.future)
+            return error;
+        else
+            return null;
+    }
 }

@@ -3,6 +3,7 @@ package de.mlessmann.internals.networking.requests.gethw;
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
 import de.mlessmann.api.data.IHWObj;
+import de.mlessmann.api.networking.CloseReason;
 import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
@@ -29,6 +30,7 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
     private String id;
     private int cid;
+    private Object error = null;
     private int errorCode = 0;
     private List<IHWObj> result = null;
     private HWFuture<List<IHWObj>> future;
@@ -38,13 +40,9 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
     //------------------------------------------------------------------------------------------------------------------
 
     public RequestGetHW(LMgr logger) {
-
         lMgr = logger;
-
         genID();
-
         this.future = new HWFuture<List<IHWObj>>(this);
-
     }
 
 
@@ -103,8 +101,9 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
     //------------------------------------- IRequest -------------------------------------------------------------------
 
     @Override
-    public void onClosed(boolean byException) {
+    public void onClosed(CloseReason rsn) {
         result = null;
+        error = null;
         errorCode = IHWFuture.ERRORCodes.CLOSED;
         future.pokeListeners();
     }
@@ -241,4 +240,11 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
             return 0;
     }
 
+    @Override
+    public Object getError(IHWFuture future) {
+        if (future == this.future)
+            return error;
+        else
+            return null;
+    }
 }

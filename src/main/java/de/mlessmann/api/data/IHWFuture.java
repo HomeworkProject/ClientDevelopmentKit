@@ -1,5 +1,7 @@
 package de.mlessmann.api.data;
 
+import de.mlessmann.common.annotations.Nullable;
+
 import java.util.NoSuchElementException;
 
 /**
@@ -15,7 +17,10 @@ public interface IHWFuture<T> {
 
     T getOrElse(T def);
 
-    int errorCode();
+    int getErrorCode();
+
+    @Nullable
+    Object getError();
 
     void registerListener(IHWFutureListener listener);
 

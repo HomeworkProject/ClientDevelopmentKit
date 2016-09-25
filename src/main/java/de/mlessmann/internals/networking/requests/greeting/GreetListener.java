@@ -1,5 +1,6 @@
 package de.mlessmann.internals.networking.requests.greeting;
 
+import de.mlessmann.api.networking.CloseReason;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.internals.logging.LMgr;
@@ -76,7 +77,7 @@ public class GreetListener implements IRequest, IMessageListener {
     //------------------------------------ IMessageListener ------------------------------------------------------------
 
     @Override
-    public void onClosed(boolean byException) {
+    public void onClosed(CloseReason rsn) {
         //Don't care
     }
 

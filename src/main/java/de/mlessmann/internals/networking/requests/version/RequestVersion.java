@@ -2,6 +2,7 @@ package de.mlessmann.internals.networking.requests.version;
 
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
+import de.mlessmann.api.networking.CloseReason;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.common.Common;
@@ -25,6 +26,7 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
 
     private String id;
     private int cid;
+    private Object error = null;
     private int errorCode = 0;
     private Boolean isCompatible = null;
     private HWFuture<Boolean> future;
@@ -102,8 +104,9 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
     //------------------------------------ IMessageListener ------------------------------------------------------------
 
     @Override
-    public void onClosed(boolean byException) {
+    public void onClosed(CloseReason rsn) {
         isCompatible = false;
+        error = rsn;
         errorCode = IHWFuture.ERRORCodes.CLOSED;
         future.pokeListeners();
     }
@@ -132,6 +135,14 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
             reqMgr.unregisterListener(this);
         reqMgr = mgr;
         reqMgr.registerListener(this);
+    }
+
+    @Override
+    public Object getError(IHWFuture future) {
+        if (future == this.future)
+            return error;
+        else
+            return null;
     }
 
     //------------------------------------ IHWFutureProvider -----------------------------------------------------------

@@ -2,6 +2,7 @@ package de.mlessmann.internals.logging;
 
 import de.mlessmann.api.logging.IHWLogContext;
 import de.mlessmann.api.logging.ILogListener;
+import de.mlessmann.api.networking.CloseReason;
 
 import java.util.ArrayList;
 
@@ -51,10 +52,10 @@ public class LMgr {
         sendLog(c);
     }
 
-    public synchronized void reportClosed(boolean byException) {
+    public synchronized void reportClosed(CloseReason rsn) {
         for (int i = listeners.size() - 1; i >= 0 ; i--) {
             ILogListener l = listeners.get(i);
-            l.onConnectionLost(byException);
+            l.onConnectionLost(rsn);
         }
     }
 

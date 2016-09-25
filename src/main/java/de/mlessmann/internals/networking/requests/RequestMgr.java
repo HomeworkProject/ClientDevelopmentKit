@@ -2,6 +2,7 @@ package de.mlessmann.internals.networking.requests;
 
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
+import de.mlessmann.api.networking.CloseReason;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.common.annotations.API;
@@ -49,6 +50,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
     //HWFutureProvider
     private HWFuture<Exception> fConnResult;
     private Exception connResult = null;
+    private Object connError = null;
     private int connErrCode = 0;
 
     public RequestMgr(LMgr logger, String serverAddr, int port) {
@@ -75,6 +77,9 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
     public Exception getPayload(IHWFuture future) {
         return connResult;
     }
+
+    @Override
+    public Object getError(IHWFuture future) { return connError; }
 
     //------------------------------------------ Main Loop -------------------------------------------------------------
 
@@ -119,7 +124,9 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
                 String ln = reader.readLine();
 
                 if (ln == null || ln.isEmpty()) {
-                    repClose(false);
+                    repClose(CloseReason.LOST);
+                    crashed = true;
+                    return; //or continue ... whatever
                 }
                 JSONObject msg = new JSONObject(ln);
 
@@ -137,7 +144,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
                 if (!(e instanceof SocketTimeoutException)) {
                     lMgr.cdk_sendLog(this, SEVERE, "IOException on reading socket");
                     lMgr.cdk_sendLog(this, SEVERE, e);
-                    repClose(true);
+                    repClose(CloseReason.EXCEPTION);
                 }
             } catch (JSONException e) {
                 lMgr.cdk_sendLog(this, WARNING, "JSONException on parsing message");
@@ -193,10 +200,10 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
     //--------------------------------------------- Misc. --------------------------------------------------------------
 
-    private void repClose(boolean byException) {
+    private void repClose(CloseReason rsn) {
         for (int i = (listeners.size() -1); i >= 0; i--)
-            listeners.get(i).onClosed(byException);
-        lMgr.reportClosed(byException);
+            listeners.get(i).onClosed(rsn);
+        lMgr.reportClosed(rsn);
     }
 
     public synchronized boolean isCrashed() {
@@ -218,7 +225,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             //Just abandon socket
         }
         killed = true;
-        repClose(false);
+        repClose(CloseReason.KILL);
     }
 
     //--------------------------------------------- Internals ----------------------------------------------------------
@@ -255,7 +262,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             r.reportFail(e);
             lMgr.sendLog(this, SEVERE, "Error sending request " + r.getUniqueID());
             lMgr.sendLog(this, SEVERE, e);
-            repClose(true);
+            repClose(CloseReason.EXCEPTION);
         }
     }
 

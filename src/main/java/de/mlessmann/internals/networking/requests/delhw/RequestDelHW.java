@@ -2,6 +2,7 @@ package de.mlessmann.internals.networking.requests.delhw;
 
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
+import de.mlessmann.api.networking.CloseReason;
 import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
@@ -24,6 +25,7 @@ public class RequestDelHW implements IRequest, IMessageListener, IHWFutureProvid
 
     private String id;
     private int cid;
+    private Object error = null;
     private int errorCode = 0;
     private Boolean result = null;
     private HWFuture<Boolean> future;
@@ -123,8 +125,9 @@ public class RequestDelHW implements IRequest, IMessageListener, IHWFutureProvid
     //------------------------------------ IMessageListener ------------------------------------------------------------
 
     @Override
-    public void onClosed(boolean byException) {
+    public void onClosed(CloseReason rsn) {
         result = null;
+        error = rsn;
         errorCode = IHWFuture.ERRORCodes.CLOSED;
         future.pokeListeners();
     }
@@ -199,4 +202,11 @@ public class RequestDelHW implements IRequest, IMessageListener, IHWFutureProvid
             return 0;
     }
 
+    @Override
+    public Object getError(IHWFuture future) {
+        if (future == this.future)
+            return error;
+        else
+            return null;
+    }
 }

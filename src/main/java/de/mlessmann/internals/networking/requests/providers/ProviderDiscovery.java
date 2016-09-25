@@ -73,7 +73,9 @@ public class ProviderDiscovery implements Runnable {
             jsonProvider.pokeListeners();
 
         } catch (Exception e) {
+            jsonProvider.setError(e);
             jsonProvider.setErrorCode(IHWFuture.ERRORCodes.UNKNOWN);
+            objProvider.setError(e);
             objProvider.setErrorCode(IHWFuture.ERRORCodes.UNKNOWN);
             lmgr.sendLog(this, LogLevel.SEVERE, "Unable to perform ProviderDiscovery: " + e.toString());
             lmgr.sendLog(this, LogLevel.SEVERE, e);

@@ -3,6 +3,7 @@ package de.mlessmann.internals.networking.requests.list;
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
 import de.mlessmann.api.data.IHWGroupMapping;
+import de.mlessmann.api.networking.CloseReason;
 import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
@@ -25,6 +26,7 @@ public class RequestList implements IRequest, IHWFutureProvider<IHWGroupMapping>
 
     private String id;
     private int cid;
+    private Object error = null;
     private int errorCode = 0;
     private IHWGroupMapping result = null;
     private HWFuture<IHWGroupMapping> future;
@@ -64,8 +66,9 @@ public class RequestList implements IRequest, IHWFutureProvider<IHWGroupMapping>
     //------------------------------------- IRequest -------------------------------------------------------------------
 
     @Override
-    public void onClosed(boolean byException) {
+    public void onClosed(CloseReason rsn) {
         result = null;
+        error = rsn;
         errorCode = IHWFuture.ERRORCodes.CLOSED;
         future.pokeListeners();
     }
@@ -171,5 +174,13 @@ public class RequestList implements IRequest, IHWFutureProvider<IHWGroupMapping>
             return errorCode;
         else
             return 0;
+    }
+
+    @Override
+    public Object getError(IHWFuture future) {
+        if (future == this.future)
+            return error;
+        else
+            return null;
     }
 }

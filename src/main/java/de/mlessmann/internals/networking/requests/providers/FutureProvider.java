@@ -10,6 +10,7 @@ import de.mlessmann.internals.data.HWFuture;
 public class FutureProvider<T> implements IHWFutureProvider<T> {
 
     private T payload;
+    private Object error = null;
     private int errorCode = 0;
     private HWFuture<T> future;
 
@@ -27,9 +28,14 @@ public class FutureProvider<T> implements IHWFutureProvider<T> {
     }
 
     @Override
+    public Object getError(IHWFuture future) { return error; }
+
+    @Override
     public T getPayload(IHWFuture future) {
         return payload;
     }
+
+    public void setError(Object error) { this.error = error; }
 
     public void setErrorCode(int code) {
         errorCode = code;
