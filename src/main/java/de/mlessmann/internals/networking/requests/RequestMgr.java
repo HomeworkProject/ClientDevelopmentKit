@@ -140,6 +140,8 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
                 if (!(e instanceof SocketTimeoutException)) {
                     crashed = true;
                     crashRsn = e;
+                    lMgr.cdk_sendLog(this, SEVERE, "IOException on reading socket");
+                    lMgr.cdk_sendLog(this, SEVERE, e);
                 }
             } catch (JSONException e) {
                 lMgr.cdk_sendLog(this, WARNING, "JSONException on parsing message");
