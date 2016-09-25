@@ -27,6 +27,7 @@ public class HWGroupMapping implements IHWGroupMapping {
     public Map<String, List<String>> getMapping() {
         Map<String, List<String>> mapping = new HashMap<String, List<String>>();
 
+        //ForEach not possible due to the org.json lib in android
         Iterator<String> i = json.keys();
         while (i.hasNext()) {
             String k = i.next();

@@ -318,8 +318,7 @@ public class HWMgr {
     @API(APILevel = 2)
     public IHWFuture<List<JSONObject>> getAvailableProvidersJSON(@Nullable String sUrl) {
 
-        if (providerDiscovery == null)
-            providerDiscovery = new ProviderDiscovery(lMgr);
+        providerDiscovery = new ProviderDiscovery(lMgr);
         providerDiscovery.requestStart(sUrl);
         return providerDiscovery.getJSONFuture();
 
