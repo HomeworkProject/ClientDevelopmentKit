@@ -103,8 +103,8 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
             } else {
                 connError = e;
                 connErrCode = IHWFuture.ERRORCodes.UNKNOWN;
-                crashed = true;
             }
+            crashed = true;
             connResult = e;
         }
 
