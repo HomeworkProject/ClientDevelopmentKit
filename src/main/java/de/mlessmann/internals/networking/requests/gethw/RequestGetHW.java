@@ -175,6 +175,8 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
                 errorCode = IHWFuture.ERRORCodes.OK;
                 result = list;
+                reqMgr.unregisterListener(this);
+                reqMgr.unregisterRequest(this);
                 future.pokeListeners();
                 return true;
 
