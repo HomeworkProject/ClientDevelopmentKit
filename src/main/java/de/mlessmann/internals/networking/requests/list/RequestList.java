@@ -92,6 +92,7 @@ public class RequestList implements IRequest, IHWFutureProvider<IHWGroupMapping>
     public void reportFail(Exception e) {
         result = null;
         errorCode = IHWFuture.ERRORCodes.UNKNOWN;
+        future.pokeListeners();
     }
 
     @Override

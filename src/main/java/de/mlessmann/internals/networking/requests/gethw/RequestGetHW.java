@@ -131,9 +131,9 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
     @Override
     public void reportFail(Exception e) {
-
         result = new ArrayList<IHWObj>();
-
+        errorCode = IHWFuture.ERRORCodes.UNKNOWN;
+        future.pokeListeners();
     }
 
     @Override

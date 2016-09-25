@@ -110,9 +110,9 @@ public class RequestDelHW implements IRequest, IMessageListener, IHWFutureProvid
 
     @Override
     public void reportFail(Exception e) {
-
         result = false;
-
+        errorCode = IHWFuture.ERRORCodes.UNKNOWN;
+        future.pokeListeners();
     }
 
     @Override
