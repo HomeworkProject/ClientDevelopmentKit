@@ -21,5 +21,4 @@ public interface IHWSession {
     String group();
 
     String user();
-
 }

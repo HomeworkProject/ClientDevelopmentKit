@@ -11,13 +11,27 @@ public interface IHWProvider {
 
     String getAddress();
 
+    int getPort();
+
+    /**
+     * Name of school
+     */
     String getName();
 
+    /**
+     * Country-Code, e.g. "DE"
+     */
     String getCountry();
 
-    String getPostal();
+    /**
+     * Equals State/Province
+     */
+    String getState();
 
-    int getPort();
+    /**
+     * Postal code
+     */
+    String getPostal();
 
     boolean isTCPPlaintextEnabled();
 

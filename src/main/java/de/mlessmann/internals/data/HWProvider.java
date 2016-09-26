@@ -16,37 +16,34 @@ public class HWProvider implements IHWProvider {
     private JSONObject json;
 
     public HWProvider(@NotNull JSONObject information) {
-
         json = information;
-
     }
 
     public boolean isValid() {
-
         try {
-
             //Nonexistent keys should raise an exception
             json.getString("address");
             json.getString("name");
             json.getInt("port");
             json.getString("postal");
             json.getString("country");
+            json.getString("state");
+            json.getString("city");
             json.getJSONObject("optional");
-
         } catch (Exception e) {
-
             return false;
-
         }
-
         return true;
-
     }
 
     public String getAddress() {
 
         return json.getString("address");
 
+    }
+
+    public int getPort() {
+        return json.getInt("port");
     }
 
     public String getName() {
@@ -56,21 +53,19 @@ public class HWProvider implements IHWProvider {
     }
 
     public String getCountry() {
-
         return json.getString("country");
+    }
 
+    public String getState() {
+        return json.getString("state");
+    }
+
+    public String getCity() {
+        return json.getString("city");
     }
 
     public String getPostal() {
-
         return json.getString("postal");
-
-    }
-
-    public int getPort() {
-
-        return json.getInt("port");
-
     }
 
     public boolean isTCPPlaintextEnabled() {

@@ -17,5 +17,4 @@ public interface IHWUser {
      */
     @Nullable
     IHWSession session();
-
 }
