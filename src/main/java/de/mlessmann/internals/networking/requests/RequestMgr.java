@@ -6,6 +6,7 @@ import de.mlessmann.api.networking.CloseReason;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.common.annotations.API;
+import de.mlessmann.common.parallel.IFuture;
 import de.mlessmann.exceptions.OutOfCIDsException;
 import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.logging.LMgr;
@@ -74,7 +75,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
     }
 
     @Override
-    public Exception getPayload(IHWFuture future) {
+    public Exception getPayload(IFuture future) {
         return connResult;
     }
 

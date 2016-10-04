@@ -7,6 +7,7 @@ import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.common.annotations.API;
+import de.mlessmann.common.parallel.IFuture;
 import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
@@ -187,7 +188,7 @@ public class RequestDelHW implements IRequest, IMessageListener, IHWFutureProvid
 
 
     @Override
-    public Boolean getPayload(IHWFuture future) {
+    public Boolean getPayload(IFuture future) {
         if (future == this.future)
             return result;
         else

@@ -37,9 +37,7 @@ public class HWProvider implements IHWProvider {
     }
 
     public String getAddress() {
-
         return json.getString("address");
-
     }
 
     public int getPort() {
@@ -47,9 +45,7 @@ public class HWProvider implements IHWProvider {
     }
 
     public String getName() {
-
         return json.getString("name");
-
     }
 
     public String getCountry() {
@@ -69,22 +65,16 @@ public class HWProvider implements IHWProvider {
     }
 
     public boolean isTCPPlaintextEnabled() {
-
         return json.getJSONObject("optional").optBoolean("tcp_plaintext_enabled", true);
-
     }
 
     public boolean isTCPSecureEnabled() {
-
         //As the hwServer currently lacks native encryption support, this defaults to false;
         return json.getJSONObject("optional").optBoolean("tcp_encrypted_enabled", false);
-
     }
 
     public JSONObject getOptions() {
-
         return json.getJSONObject("optional");
-
     }
 
     public JSONObject getJSON() {

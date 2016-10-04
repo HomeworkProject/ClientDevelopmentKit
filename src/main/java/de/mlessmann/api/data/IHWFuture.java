@@ -1,28 +1,20 @@
 package de.mlessmann.api.data;
 
 import de.mlessmann.common.annotations.Nullable;
-
-import java.util.NoSuchElementException;
+import de.mlessmann.common.parallel.IFuture;
 
 /**
  * Created by Life4YourGames on 09.08.16.
  */
-public interface IHWFuture<T> {
+public interface IHWFuture<T> extends IFuture<T> {
 
+    @Deprecated
     boolean isDone();
-
-    boolean isPresent();
-
-    T get() throws NoSuchElementException;
-
-    T getOrElse(T def);
 
     int getErrorCode();
 
     @Nullable
     Object getError();
-
-    void registerListener(IHWFutureListener listener);
 
     public class ERRORCodes {
 

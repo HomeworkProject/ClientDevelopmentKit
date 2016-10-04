@@ -2,6 +2,7 @@ package de.mlessmann.internals.networking.requests.providers;
 
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
+import de.mlessmann.common.parallel.IFuture;
 import de.mlessmann.internals.data.HWFuture;
 
 /**
@@ -31,7 +32,7 @@ public class FutureProvider<T> implements IHWFutureProvider<T> {
     public Object getError(IHWFuture future) { return error; }
 
     @Override
-    public T getPayload(IHWFuture future) {
+    public T getPayload(IFuture future) {
         return payload;
     }
 

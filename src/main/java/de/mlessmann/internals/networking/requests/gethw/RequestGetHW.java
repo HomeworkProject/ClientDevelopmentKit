@@ -8,6 +8,7 @@ import de.mlessmann.api.networking.Errors;
 import de.mlessmann.api.networking.IMessageListener;
 import de.mlessmann.api.networking.IRequest;
 import de.mlessmann.common.annotations.API;
+import de.mlessmann.common.parallel.IFuture;
 import de.mlessmann.internals.data.HWFuture;
 import de.mlessmann.internals.data.HWObject;
 import de.mlessmann.internals.logging.LMgr;
@@ -227,7 +228,7 @@ public class RequestGetHW implements IRequest, IHWFutureProvider<List<IHWObj>>, 
 
 
     @Override
-    public List<IHWObj> getPayload(IHWFuture future) {
+    public List<IHWObj> getPayload(IFuture future) {
         if (future == this.future)
             return result;
         else

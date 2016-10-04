@@ -1,8 +1,8 @@
 package de.mlessmann.internals.data;
 
 import de.mlessmann.api.data.IHWFuture;
-import de.mlessmann.api.data.IHWFutureListener;
 import de.mlessmann.api.data.IHWFutureProvider;
+import de.mlessmann.common.parallel.IFutureListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 public class HWFuture<T> implements IHWFuture<T> {
 
     private IHWFutureProvider<T> provider;
-    private List<IHWFutureListener> listeners = new ArrayList<IHWFutureListener>();
+    private List<IFutureListener> listeners = new ArrayList<IFutureListener>();
 
     public HWFuture(IHWFutureProvider<T> provider) {
 
@@ -22,24 +22,27 @@ public class HWFuture<T> implements IHWFuture<T> {
 
     }
 
+    @Override
     public boolean isDone() {
         return isPresent() || getErrorCode() != 0;
     }
 
+    @Override
     public boolean isPresent() {
-
         return provider.getPayload(this) != null;
-
     }
 
+    @Override
     public int getErrorCode() {
         return provider.getErrorCode(this);
     }
 
+    @Override
     public Object getError() {
         return provider.getError(this);
     }
 
+    @Override
     public T get() throws NoSuchElementException {
         if (!isPresent())
             throw new NoSuchElementException();
@@ -48,20 +51,29 @@ public class HWFuture<T> implements IHWFuture<T> {
 
     }
 
+    @Override
     public T getOrElse(T def) {
         if (isPresent())
             return get();
         return def;
     }
 
-    public void registerListener(IHWFutureListener listener) {
+    @Override
+    public void registerListener(IFutureListener listener) {
         if (!listeners.contains(listener))
             listeners.add(listener);
     }
 
+    @Override
+    public void unregisterListener(IFutureListener listener) {
+        if (!listeners.contains(listener)) return;
+        listeners.remove(listener);
+    }
+
+
     public void pokeListeners() {
-        for (IHWFutureListener l : listeners)
-            l.notifyListener(this);
+        for (IFutureListener l : listeners)
+            l.onFutureAvailable(this);
     }
 
 }
