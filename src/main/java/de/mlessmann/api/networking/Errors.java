@@ -13,5 +13,6 @@ public interface Errors {
     public static String InsuffPermError = "InsufficientPermissionError";
     public static String AddHWError = "AddHWError";
     public static String DelHWError = "DelHWError";
+    public static String EditHWError = "EditHWError";
 
 }

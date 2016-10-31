@@ -11,6 +11,7 @@ import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
 import de.mlessmann.internals.networking.requests.addhw.RequestAddHW;
 import de.mlessmann.internals.networking.requests.delhw.RequestDelHW;
+import de.mlessmann.internals.networking.requests.edithw.RequestEditHW;
 import de.mlessmann.internals.networking.requests.gethw.RequestGetHW;
 import de.mlessmann.internals.networking.requests.list.RequestList;
 import de.mlessmann.internals.networking.requests.login.RequestLogin;
@@ -233,6 +234,19 @@ public class HWMgr {
 
         req.setHW(hw);
         req.reportMgr(reqMgr);
+        reqMgr.queueRequest(req);
+
+        return req.getFuture();
+    }
+
+    @API(APILevel = 1)
+    public IHWFuture<Boolean> editHW(int yyyy, int MM, int dd, String oldID, IHWCarrier newHW) {
+
+        RequestEditHW req = new RequestEditHW(lMgr);
+
+        req.setDate(yyyy, MM, dd);
+        req.setID(oldID);
+        req.setHW(newHW);
         reqMgr.queueRequest(req);
 
         return req.getFuture();
