@@ -124,7 +124,6 @@ public class HWMgr {
 
         setProvider(provider);
         return connect();
-
     }
 
     @API(APILevel = 1)
@@ -151,6 +150,11 @@ public class HWMgr {
 
     //---------------------------------------- Communication -----------------------------------------------------------
 
+    /**
+     * Checks if the servers protocolVersion is supposed to be compatible with
+     * the CDKs implementation
+     * @return
+     */
     @API(APILevel = 1)
     public IHWFuture<Boolean> isCompatible() {
 
@@ -162,6 +166,11 @@ public class HWMgr {
         return req.getFuture();
     }
 
+    /**
+     * Requests a group listing and may limit the response to only one specific group
+     * @param onlyThisGroup the group to limit the response to
+     * @return
+     */
     @API(APILevel = 1)
     public IHWFuture<IHWGroupMapping> getGroups(@Nullable String onlyThisGroup) {
         RequestList req = new RequestList(lMgr);
@@ -173,6 +182,13 @@ public class HWMgr {
         return req.getFuture();
     }
 
+    /**
+     * Attempts a login using the specified information
+     * @param grp Group to login to
+     * @param usr User to login
+     * @param auth Authentication string such as password
+     * @return
+     */
     @API(APILevel = 1)
     public IHWFuture<IHWUser> login(String grp, String usr, String auth) {
 
@@ -188,6 +204,11 @@ public class HWMgr {
         return req.getFuture();
     }
 
+    /**
+     * Attempts a login using the provided token
+     * @param token SessionToken previously received by the server
+     * @return
+     */
     @API(APILevel = 1)
     public IHWFuture<IHWUser> login(String token) {
 
@@ -201,6 +222,13 @@ public class HWMgr {
         return req.getFuture();
     }
 
+    /**
+     * Returns the Homeworks on a specific date
+     * @param yyyy well, you know
+     * @param MM well, you know
+     * @param dd well, you know
+     * @return
+     */
     @API(APILevel = 1)
     public IHWFuture<List<IHWObj>> getHWOn(int yyyy, int MM, int dd) {
 
@@ -214,6 +242,17 @@ public class HWMgr {
         return req.getFuture();
     }
 
+    /**
+     * Returns the Homeworks between the two dates
+     * Note: The server limits the max day count to 64 by default!
+     * @param yyyyFrom well, you know
+     * @param MMFrom well, you know
+     * @param ddFrom well, you know
+     * @param yyyyTo well, you know
+     * @param MMTo well, you know
+     * @param ddTo well, you know
+     * @return
+     */
     @API(APILevel = 1)
     public IHWFuture<List<IHWObj>> getHWBetween(int yyyyFrom, int MMFrom, int ddFrom, int yyyyTo, int MMTo, int ddTo) {
 
@@ -227,6 +266,11 @@ public class HWMgr {
         return req.getFuture();
     }
 
+    /**
+     * Pushes a new Homework to the server
+     * @param hw Homework to be added
+     * @return IHWFuture\<Boolean\>
+     */
     @API(APILevel = 1)
     public IHWFuture<Boolean> addHW(IHWCarrier hw) {
 
@@ -239,6 +283,16 @@ public class HWMgr {
         return req.getFuture();
     }
 
+    /**
+     * Replaces a Homework with a newer version
+     * Allows changing the date of a Homework
+     * @param yyyy year of the old hw date
+     * @param MM month of the old hw date
+     * @param dd day of the old hw date
+     * @param oldID id of the old hw
+     * @param newHW new Homework to add
+     * @return IHWFuture\<Boolean\>
+     */
     @API(APILevel = 1)
     public IHWFuture<Boolean> editHW(int yyyy, int MM, int dd, String oldID, IHWCarrier newHW) {
 
@@ -252,6 +306,11 @@ public class HWMgr {
         return req.getFuture();
     }
 
+    /**
+     * Deletes a homework
+     * @param hw deletes a Homework
+     * @return IHWFuture\<Boolean\>
+     */
     @API(APILevel = 1)
     public IHWFuture<Boolean> delHW(IHWCarrier hw) {
 
