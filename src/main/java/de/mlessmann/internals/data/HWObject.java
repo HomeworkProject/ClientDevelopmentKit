@@ -1,9 +1,14 @@
 package de.mlessmann.internals.data;
 
+import de.mlessmann.api.data.IHWAttachment;
 import de.mlessmann.api.data.IHWObj;
 import de.mlessmann.common.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Life4YourGames on 10.08.16.
@@ -79,5 +84,35 @@ public class HWObject implements IHWObj {
         return src;
     }
 
+    @Override
+    public int getAttachmentCount() {
+        return getAttachments().size();
+    }
+
+    @Override
+    public List<IHWAttachment> getAttachments() {
+        List<IHWAttachment> l = new ArrayList<IHWAttachment>();
+
+        JSONObject attachJSON = src.optJSONObject("attachments");
+        if (attachJSON!=null) {
+            //ForEach not possible due to the org.json lib in android
+            Iterator<String> i = attachJSON.keys();
+            while (i.hasNext()) {
+                String k = i.next();
+                JSONObject o = attachJSON.optJSONObject(k);
+                if (o!=null && k.startsWith("position-")) {
+                    String pos = k.substring("position-".length());
+                    try {
+                        int iPos = Integer.parseInt(pos);
+                        HWAttachment a = new HWAttachment(o, iPos);
+                        if (a.isValid()) l.add(a);
+                    } catch (NumberFormatException e) {
+                        //Invalid attachment, just skip
+                    }
+                }
+            }
+        }
+        return l;
+    }
 }
 
