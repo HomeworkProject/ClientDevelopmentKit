@@ -1,7 +1,7 @@
 package de.mlessmann.internals.data;
 
-import de.mlessmann.api.annotations.Nullable;
 import de.mlessmann.api.data.IHWAttachmentLocation;
+import de.mlessmann.common.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
