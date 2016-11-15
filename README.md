@@ -1,4 +1,5 @@
 [logo]:https://github.com/MarkL4YG/Homework_Server_CDK/blob/bleeding/src/main/resources/experimental_logo.png
+[Server]:https://github.com/MarkL4YG/Homework_Server
 [![Build Status](https://travis-ci.org/MarkL4YG/Homework_Server_CDK.svg?branch=bleeding)](https://travis-ci.org/MarkL4YG/Homework_Server_CDK)
 
 # HWServer CDK
@@ -33,7 +34,7 @@ The best place to get information about pending features, pending fixes, current
 If you want to contribute to our project, feel free, to do so via.    
 * answering issues
 * suggesting features and/or solutions
-* or even forking the project and directly providing fixes and features.
+* or even forking the project and directly providing fixes and features.  
 
 
 At least for this repository (the server) you can freely do so and open pull requests whenever you think it might help.  
@@ -52,9 +53,9 @@ Google Hangouts: [Me](https://plus.google.com/+MarkL4YG)
 E-Mail: [Me](mailto:github@m-lessmann.de) or [Sebastian](mailto:mail@s-paarmann.de)  
 
 Or even personally if you live near Henstedt-Ulzburg (Germany) by contacting our school  
-(Alstergymnasium Henstedt-Ulzburg)
+(Alstergymnasium Henstedt-Ulzburg)  
 
 ### ToDos (regarding the readMe) ###
 
 TODO: Enhance readMe  
-TODO: Link license - Currently: ALL RIGHTS RESERVED (Will change as soon as I chose one)
+TODO: Link license - Currently: ALL RIGHTS RESERVED (Will change as soon as I chose one)  

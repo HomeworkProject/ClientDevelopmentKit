@@ -1,6 +1,7 @@
 package de.mlessmann.internals.data;
 
 import de.mlessmann.api.data.IHWAttachment;
+import de.mlessmann.api.data.IHWAttachmentLocation;
 import org.json.JSONObject;
 
 /**
@@ -17,12 +18,7 @@ public class HWAttachment implements IHWAttachment {
 
     public boolean isValid() {
         return !getID().equals("null")
-                && getURL()!=null;
-    }
-
-    @Override
-    public int getPosition() {
-        return position;
+                && attachmentJSON.optJSONObject("location")!=null;
     }
 
     @Override
@@ -41,8 +37,8 @@ public class HWAttachment implements IHWAttachment {
     }
 
     @Override
-    public String getURL() {
-        return attachmentJSON.optString("url");
+    public IHWAttachmentLocation getLocation() {
+        return new HWAttachmentLocation(attachmentJSON.optJSONObject("location"));
     }
 }
 
