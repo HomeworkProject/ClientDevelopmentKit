@@ -16,8 +16,10 @@ public class HWAttachmentLocation implements IHWAttachmentLocation {
     private String remoteURL;
     private String name = null;
     private LocationType type = LocationType.INVALID;
+    private JSONObject json;
 
     public HWAttachmentLocation(JSONObject location) {
+        json = location;
         if (location != null && (location.optString("name"))!=null) {
             String webLocation = location.optString("url");
             if (webLocation != null) {
@@ -71,5 +73,8 @@ public class HWAttachmentLocation implements IHWAttachmentLocation {
         return type;
     }
 
-
+    @Override
+    public JSONObject getJSON() {
+        return json;
+    }
 }

@@ -22,6 +22,7 @@ public interface IHWFuture<T> extends IFuture<T> {
         public static final int UNKNOWN = -1;
         public static final int OK = 200;
         public static final int LOGGEDIN = OK;
+        public static final int NOCONTENT = 204;
 
         public static final int PROTOError = 400;
         public static final int DATETIMEError = 4001;
@@ -36,6 +37,8 @@ public interface IHWFuture<T> extends IFuture<T> {
         
         public static final int NOTFOUNDERR = 404;
 
-    }
+        public static final int LOCKED = 423;
 
+        public static final int UNAVAILABLE = 503;
+    }
 }
