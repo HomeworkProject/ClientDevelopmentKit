@@ -8,8 +8,8 @@ import de.mlessmann.common.parallel.IFutureProvider;
  */
 public interface IHWFutureProvider<T>  extends IFutureProvider<T> {
 
-    int getErrorCode(IHWFuture future);
+    int getErrorCode(IHWFuture<?> future);
 
     @Nullable
-    Object getError(IHWFuture future);
+    Object getError(IHWFuture<?> future);
 }

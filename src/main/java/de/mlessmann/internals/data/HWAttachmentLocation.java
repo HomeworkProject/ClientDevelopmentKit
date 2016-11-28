@@ -43,6 +43,10 @@ public class HWAttachmentLocation implements IHWAttachmentLocation {
         }
     }
 
+    public boolean isVirtual() {
+        return json.has("virtual");
+    }
+
     public String getName() { return name; }
 
     @Nullable

@@ -27,9 +27,11 @@ public interface IHWFuture<T> extends IFuture<T> {
         public static final int PROTOError = 400;
         public static final int DATETIMEError = 4001;
         public static final int INVALIDPAYLOAD = 4002;
+        public static final int MALFORMEDURL = 4003;
 
         public static final int LOGINREQ = 401;
         public static final int INVALIDCREDERR = 401;
+        public static final int INVALIDTOKEN = 4011;
         //E.g. provided token is expired and needs to be renewed
         public static final int EXPIRED = 4011;
 

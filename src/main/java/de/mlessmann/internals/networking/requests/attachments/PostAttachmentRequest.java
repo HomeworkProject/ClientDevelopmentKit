@@ -1,4 +1,4 @@
-package de.mlessmann.internals.networking.filetransfer.requests;
+package de.mlessmann.internals.networking.requests.attachments;
 
 import de.mlessmann.api.data.IFTToken;
 import de.mlessmann.api.data.IHWAttachmentLocation;
@@ -22,10 +22,9 @@ import java.util.Calendar;
 /**
  * Created by Life4YourGames on 15.11.16.
  */
-public class ReceiveAttachmentRequest implements IRequest, IMessageListener, IHWFutureProvider<IFTToken> {
+public class PostAttachmentRequest implements IRequest, IMessageListener, IHWFutureProvider<IFTToken> {
 
-
-    private JSONObject REQ = new JSONObject("{\n\"command\": \"getasset\"\n}");
+    private JSONObject REQ = new JSONObject("{\n\"command\": \"postasset\"\n}");
 
     private String id;
     private int cid;
@@ -38,7 +37,7 @@ public class ReceiveAttachmentRequest implements IRequest, IMessageListener, IHW
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public ReceiveAttachmentRequest(LMgr logger) {
+    public PostAttachmentRequest(LMgr logger) {
         lMgr = logger;
         genID();
         this.future = new HWFuture<IFTToken>(this);
@@ -46,7 +45,6 @@ public class ReceiveAttachmentRequest implements IRequest, IMessageListener, IHW
 
 
     private void genID() {
-
         id = this.toString();
 
         Calendar cal = Calendar.getInstance();
@@ -80,9 +78,7 @@ public class ReceiveAttachmentRequest implements IRequest, IMessageListener, IHW
 
     @Override
     public JSONObject getRequestMsg() {
-
         return REQ;
-
     }
 
     @Override
@@ -97,7 +93,7 @@ public class ReceiveAttachmentRequest implements IRequest, IMessageListener, IHW
 
     @Override
     public void reportFail(Exception e) {
-        result = new FTToken(null, IFTToken.Direction.UNKNOWN);
+        result = new FTToken(null, IFTToken.Direction.UNKNOWN, 0);
         errorCode = IHWFuture.ERRORCodes.UNKNOWN;
         future.pokeListeners();
     }
@@ -127,7 +123,7 @@ public class ReceiveAttachmentRequest implements IRequest, IMessageListener, IHW
         int status = msg.optInt("status", 0);
         if (status == 201) {
             errorCode = HWFuture.ERRORCodes.OK;
-            result = new FTToken(msg.getString("token"), IFTToken.Direction.GET);
+            result = new FTToken(msg.getString("token"), IFTToken.Direction.GET, msg.getInt("port"));
             future.pokeListeners();
             reqMgr.unregisterListener(this);
             reqMgr.unregisterRequest(this);

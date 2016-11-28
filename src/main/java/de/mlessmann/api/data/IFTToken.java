@@ -17,4 +17,6 @@ public interface IFTToken {
     String getToken();
 
     IFTToken.Direction getDirection();
+
+    int getPort();
 }

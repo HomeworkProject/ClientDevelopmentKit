@@ -10,6 +10,8 @@ import de.mlessmann.internals.data.HWProvider;
 import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
 import de.mlessmann.internals.networking.requests.addhw.RequestAddHW;
+import de.mlessmann.internals.networking.requests.attachments.DownloadAttachmentFTRequest;
+import de.mlessmann.internals.networking.requests.attachments.ReceiveAttachmentRequest;
 import de.mlessmann.internals.networking.requests.delhw.RequestDelHW;
 import de.mlessmann.internals.networking.requests.edithw.RequestEditHW;
 import de.mlessmann.internals.networking.requests.gethw.RequestGetHW;
@@ -24,6 +26,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Proxy;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -392,7 +395,6 @@ public class HWMgr {
         providerDiscovery = new ProviderDiscovery(lMgr);
         providerDiscovery.requestStart(sUrl);
         return providerDiscovery.getJSONFuture();
-
     }
 
     @API(APILevel = 2)
@@ -417,6 +419,76 @@ public class HWMgr {
         req.reportMgr(reqMgr);
         reqMgr.queueRequest(req);
         return req.getFuture();
+    }
+
+    //--------------------------------------- Attachments --------------------------------------------------------------
+
+    /**
+     * Request file transfer tokens for downloading an asset from the server
+     * @param location Location of the Attachment
+     * @return Token to use for download-clearance!
+     *         <code>null</code> if this isn't a location on the server -> Request is skipped since it would return just the same
+     */
+    @API(APILevel = 2)
+    @Nullable
+    public IHWFuture<IFTToken> requestAttachmentFromServer(IHWAttachmentLocation location) {
+        if (location.getLocType() == IHWAttachmentLocation.LocationType.SERVER) {
+            ReceiveAttachmentRequest req = new ReceiveAttachmentRequest(lMgr);
+            req.setLocation(location);
+            req.reportMgr(reqMgr);
+            reqMgr.queueRequest(req);
+            return req.getFuture();
+        }
+        return null;
+    }
+
+    /**
+     * Actually download a file from the server
+     * @param loc Location information of the attachment
+     * @param token Optional: If the file is located on the server this is mandatory
+     * @param acceptor used to store the file somewhere
+     * @return StreamResult indicating some info on the status of the file
+     */
+    @API(APILevel = 2)
+    public IHWFuture<IHWStreamReadResult> downloadAttachmentFromServer(IHWAttachmentLocation loc, @Nullable IFTToken token, IHWStreamAcceptor acceptor) {
+        DownloadAttachmentFTRequest req = new DownloadAttachmentFTRequest(lMgr, loc, reqMgr, this);
+        req.setAcceptor(acceptor);
+        req.setToken(token);
+        new Thread(req).start();
+        return req.getFuture();
+    }
+
+    /**
+     * Pushes an attachment to the server
+     * IMPORTANT: This attachment may !ONLY! be located on the web
+     * @see #pushAttachment(IHWAttachmentLocation, IHWStreamProvider)
+     * @deprecated ::NOT IMPLEMENTED WIP::
+     */
+    @API(APILevel = 2)
+    @Deprecated
+    public IHWFuture<IHWObj> pushAttachment(IHWAttachmentLocation attachment) {
+        return null;
+    }
+
+    /**
+     * Pushes an attachment to the server
+     * IMPORTANT: This attachment may !ONLY! be located on the server
+     * @see #pushAttachment(IHWAttachmentLocation, IHWStreamProvider)
+     * @deprecated ::NOT IMPLEMENTED WIP::
+     */
+    @API(APILevel = 2)
+    @Deprecated
+    public IHWFuture<IHWObj> pushAttachment(IHWAttachmentLocation attachment, IHWStreamProvider provider) {
+        return null;
+    }
+
+    @Nullable
+    public SocketAddress getServerAddress() {
+        return reqMgr != null ? reqMgr.getServerAddr() : null;
+    }
+
+    public String getServerAddressString() {
+        return reqMgr != null ? reqMgr.getServerAddressString() : null;
     }
 
 }

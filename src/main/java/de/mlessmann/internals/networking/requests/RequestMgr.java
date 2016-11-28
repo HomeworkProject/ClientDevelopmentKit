@@ -86,7 +86,7 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
 
     public void run() {
         try {
-            InetSocketAddress sAddr = new InetSocketAddress(serverAddress, port);
+            sAddr = new InetSocketAddress(serverAddress, port);
 
             socket = new Socket();
             socket.connect(sAddr, 2000);
@@ -229,6 +229,14 @@ public class RequestMgr implements Runnable, IHWFutureProvider<Exception> {
         }
         killed = true;
         repClose(CloseReason.KILL);
+    }
+
+    public SocketAddress getServerAddr() {
+        return sAddr;
+    }
+
+    public String getServerAddressString() {
+        return serverAddress;
     }
 
     //--------------------------------------------- Internals ----------------------------------------------------------
