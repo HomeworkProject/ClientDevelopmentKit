@@ -37,24 +37,17 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
     //------------------------------------------------------------------------------------------------------------------
 
     public RequestVersion(LMgr logger) {
-
         lMgr = logger;
-
         genID();
-
         this.future = new HWFuture<Boolean>(this);
-
     }
 
 
     private void genID() {
-
         id = this.toString();
-
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         id = id + sdf.format(cal.getTime());
-
     }
 
     //------------------------------------- Payload/Result -------------------------------------------------------------
@@ -115,7 +108,6 @@ public class RequestVersion implements IRequest, IMessageListener, IHWFutureProv
     @Override
     public boolean onMessage(JSONObject msg) {
         if (msg.optString("handler", "null").equals("de.mlessmann.commands.getProtocolVersion")) {
-
             String version = msg.getString("protoVersion");
             String currentVersion = API.PROTOVERSION;
 

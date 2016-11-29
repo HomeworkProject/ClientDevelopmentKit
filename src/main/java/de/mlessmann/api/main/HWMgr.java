@@ -11,6 +11,8 @@ import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
 import de.mlessmann.internals.networking.requests.addhw.RequestAddHW;
 import de.mlessmann.internals.networking.requests.attachments.DownloadAttachmentFTRequest;
+import de.mlessmann.internals.networking.requests.attachments.PostAttachmentRequest;
+import de.mlessmann.internals.networking.requests.attachments.PushAttachmentFTRequest;
 import de.mlessmann.internals.networking.requests.attachments.ReceiveAttachmentRequest;
 import de.mlessmann.internals.networking.requests.delhw.RequestDelHW;
 import de.mlessmann.internals.networking.requests.edithw.RequestEditHW;
@@ -461,25 +463,29 @@ public class HWMgr {
     /**
      * Pushes an attachment to the server
      * IMPORTANT: This attachment may !ONLY! be located on the web
-     * @see #pushAttachment(IHWAttachmentLocation, IHWStreamProvider)
-     * @deprecated ::NOT IMPLEMENTED WIP::
+     * @see #pushAttachment(IHWAttachmentLocation, IFTToken, IHWStreamProvider)
+     * @return IHWFuture\<NULL\> with error-code 'OK'
      */
     @API(APILevel = 2)
-    @Deprecated
-    public IHWFuture<IHWObj> pushAttachment(IHWAttachmentLocation attachment) {
-        return null;
+    public IHWFuture<IFTToken> pushAttachmentRequest(IHWAttachmentLocation loc) {
+        PostAttachmentRequest req = new PostAttachmentRequest(lMgr);
+        req.setLocation(loc);
+        req.reportMgr(reqMgr);
+        reqMgr.queueRequest(req);
+        return req.getFuture();
     }
 
     /**
      * Pushes an attachment to the server
      * IMPORTANT: This attachment may !ONLY! be located on the server
-     * @see #pushAttachment(IHWAttachmentLocation, IHWStreamProvider)
-     * @deprecated ::NOT IMPLEMENTED WIP::
      */
     @API(APILevel = 2)
-    @Deprecated
-    public IHWFuture<IHWObj> pushAttachment(IHWAttachmentLocation attachment, IHWStreamProvider provider) {
-        return null;
+    public IHWFuture<IHWStreamWriteResult> pushAttachment(IHWAttachmentLocation attachment, IFTToken token, IHWStreamProvider provider) {
+        PushAttachmentFTRequest req = new PushAttachmentFTRequest(lMgr, attachment, reqMgr, this);
+        req.setToken(token);
+        req.setProvider(provider);
+        new Thread(req).start();
+        return req.getFuture();
     }
 
     @Nullable

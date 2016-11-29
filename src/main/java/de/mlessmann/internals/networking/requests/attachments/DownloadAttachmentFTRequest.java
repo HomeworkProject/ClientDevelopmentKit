@@ -120,6 +120,24 @@ public class DownloadAttachmentFTRequest implements Runnable, IHWFutureProvider<
                 acceptor.write(buffer, 0, read);
             }
             in.close();
+            final int byteTotal = total;
+            final int bufferSize = buffer.length;
+            error = new IHWStreamReadResult() {
+                @Override
+                public IHWStreamAcceptor getUsedAcceptor() {
+                    return acceptor;
+                }
+
+                @Override
+                public int getByteCount() {
+                    return byteTotal;
+                }
+
+                @Override
+                public int getUsedBufferSize() {
+                    return bufferSize;
+                }
+            };
         } catch (IOException e) {
             r.sendLog(this, LogLevel.WARNING, e);
             errorCode = IHWFuture.ERRORCodes.UNKNOWN;

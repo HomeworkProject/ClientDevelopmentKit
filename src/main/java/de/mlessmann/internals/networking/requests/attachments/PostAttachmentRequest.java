@@ -121,6 +121,15 @@ public class PostAttachmentRequest implements IRequest, IMessageListener, IHWFut
             return false;
 
         int status = msg.optInt("status", 0);
+        //OK - No upload required
+        if (status == 200) {
+            errorCode = HWFuture.ERRORCodes.OK;
+            result = null;
+            future.pokeListeners();
+            reqMgr.unregisterListener(this);
+            reqMgr.unregisterRequest(this);
+            return true;
+        }
         if (status == 201) {
             errorCode = HWFuture.ERRORCodes.OK;
             result = new FTToken(msg.getString("token"), IFTToken.Direction.GET, msg.getInt("port"));
