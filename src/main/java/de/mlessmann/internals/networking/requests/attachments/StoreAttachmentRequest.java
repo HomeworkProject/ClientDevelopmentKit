@@ -1,7 +1,7 @@
 package de.mlessmann.internals.networking.requests.attachments;
 
 import de.mlessmann.api.data.IFTToken;
-import de.mlessmann.api.data.IHWAttachmentLocation;
+import de.mlessmann.api.data.IHWAttachment;
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
 import de.mlessmann.api.networking.CloseReason;
@@ -22,7 +22,7 @@ import java.util.Calendar;
 /**
  * Created by Life4YourGames on 15.11.16.
  */
-public class PostAttachmentRequest implements IRequest, IMessageListener, IHWFutureProvider<IFTToken> {
+public class StoreAttachmentRequest implements IRequest, IMessageListener, IHWFutureProvider<IFTToken> {
 
     private JSONObject REQ = new JSONObject("{\n\"command\": \"postasset\"\n}");
 
@@ -37,7 +37,7 @@ public class PostAttachmentRequest implements IRequest, IMessageListener, IHWFut
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public PostAttachmentRequest(LMgr logger) {
+    public StoreAttachmentRequest(LMgr logger) {
         lMgr = logger;
         genID();
         this.future = new HWFuture<IFTToken>(this);
@@ -55,7 +55,7 @@ public class PostAttachmentRequest implements IRequest, IMessageListener, IHWFut
     //------------------------------------- Payload/Result -------------------------------------------------------------
 
     @API(APILevel = 2)
-    public void setLocation(IHWAttachmentLocation obj) {
+    public void setLocation(IHWAttachment obj) {
         REQ.put("location", obj.getJSON());
     }
 

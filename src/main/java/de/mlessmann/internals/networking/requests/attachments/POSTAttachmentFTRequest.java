@@ -11,40 +11,41 @@ import de.mlessmann.internals.networking.requests.RequestMgr;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.nio.charset.Charset;
 
 /**
- * Created by Life4YourGames on 18.11.16.
- * Downloads attachments from server or web
+ * Created by Life4YourGames on 28.11.16.
  */
-public class DownloadAttachmentFTRequest implements Runnable, IHWFutureProvider<IHWStreamReadResult> {
+public class POSTAttachmentFTRequest implements Runnable, IHWFutureProvider<IHWStreamWriteResult> {
 
     private LMgr r = null;
-    private IHWAttachmentLocation location;
+    private IHWAttachment location;
 
     private RequestMgr requestMgr;
     private HWMgr hwMgr;
 
-    private HWFuture<IHWStreamReadResult> future;
-    private IHWStreamReadResult payload;
+    private HWFuture<IHWStreamWriteResult> future;
+    private IHWStreamWriteResult payload;
     private Object error = null;
     private int errorCode = 0;
 
     private IFTToken token = null;
-    private IHWStreamAcceptor acceptor;
+    private IHWStreamProvider provider;
     private Socket sock = null;
 
-    public DownloadAttachmentFTRequest(LMgr r, IHWAttachmentLocation location, RequestMgr reqMgr, HWMgr hwMgr) {
+    public POSTAttachmentFTRequest(LMgr r, IHWAttachment location, RequestMgr reqMgr, HWMgr hwMgr) {
         this.r = r;
         this.location = location;
-        this.future = new HWFuture<IHWStreamReadResult>(this);
+        this.future = new HWFuture<IHWStreamWriteResult>(this);
         this.payload = null;
         this.requestMgr = reqMgr;
         this.hwMgr = hwMgr;
     }
 
-    public IHWFuture<IHWStreamReadResult> getFuture() {
+    public IHWFuture<IHWStreamWriteResult> getFuture() {
         return future;
     }
 
@@ -65,7 +66,7 @@ public class DownloadAttachmentFTRequest implements Runnable, IHWFutureProvider<
     }
 
     @Override
-    public IHWStreamReadResult getPayload(IFuture<?> future) {
+    public IHWStreamWriteResult getPayload(IFuture<?> future) {
         if (this.future == future)
             return payload;
         else
@@ -78,21 +79,21 @@ public class DownloadAttachmentFTRequest implements Runnable, IHWFutureProvider<
         this.token = token;
     }
 
-    public void setAcceptor(IHWStreamAcceptor acceptor) {
-        this.acceptor = acceptor;
+    public void setProvider(IHWStreamProvider provider) {
+        this.provider = provider;
     }
 
     @Override
     public void run() {
+        payload = null;
+        errorCode = 0;
         if (token == null) {
             //No token has previously been set
             errorCode = IHWFuture.ERRORCodes.PROTOError;
         }
 
-        if (location.getLocType() == IHWAttachmentLocation.LocationType.SERVER) {
-            fromServer();
-        } else if (location.getLocType() == IHWAttachmentLocation.LocationType.WEB) {
-            fromWeb();
+        if (location.getLocType() == IHWAttachment.LocationType.SERVER) {
+            toServer();
         } else {
             //Invalid location
             errorCode = IHWFuture.ERRORCodes.PROTOError;
@@ -100,7 +101,7 @@ public class DownloadAttachmentFTRequest implements Runnable, IHWFutureProvider<
         future.pokeListeners();
     }
 
-    private void fromServer() {
+    private void toServer() {
         sock = new Socket();
         SocketAddress addr = new InetSocketAddress(hwMgr.getServerAddressString(), token.getPort());
         try {
@@ -108,24 +109,26 @@ public class DownloadAttachmentFTRequest implements Runnable, IHWFutureProvider<
 
             //Send token
             OutputStream out = sock.getOutputStream();
-            out.write(token.getToken().getBytes(Charset.forName("utf-8")));
-
-            //Receive file
             InputStream in = sock.getInputStream();
+            out.write(token.getToken().getBytes(Charset.forName("utf-8")));
+            out.flush();
+
+            //Send file
             byte[] buffer = new byte[2048];
             int total = 0;
             int read = 0;
-            while ((read = in.read(buffer)) > -1) {
+            while ((read = provider.read(buffer, 0, 2048)) > -1) {
                 total += read;
-                acceptor.write(buffer, 0, read);
+                out.write(buffer, 0, read);
+                out.flush();
             }
-            in.close();
+            sock.close();
             final int byteTotal = total;
             final int bufferSize = buffer.length;
-            error = new IHWStreamReadResult() {
+            payload = new IHWStreamWriteResult() {
                 @Override
-                public IHWStreamAcceptor getUsedAcceptor() {
-                    return acceptor;
+                public IHWStreamProvider getUsedProvider() {
+                    return provider;
                 }
 
                 @Override
@@ -146,38 +149,4 @@ public class DownloadAttachmentFTRequest implements Runnable, IHWFutureProvider<
         errorCode = IHWFuture.ERRORCodes.OK;
     }
 
-    private void fromWeb() {
-        URL u;
-        try {
-            u = new URL(location.getURL());
-        } catch (MalformedURLException e) {
-            r.sendLog(this, LogLevel.WARNING, e);
-            errorCode = IHWFuture.ERRORCodes.MALFORMEDURL;
-            return;
-        }
-
-        if (acceptor==null) {
-            errorCode = IHWFuture.ERRORCodes.UNKNOWN;
-            return;
-        }
-
-        URLConnection conn;
-        try {
-            conn = u.openConnection();
-            InputStream in = conn.getInputStream();
-            byte[] buffer = new byte[2048];
-            int total = 0;
-            int read = 0;
-            while ((read = in.read(buffer)) >= -1) {
-                total += read;
-                acceptor.write(buffer, 0, read);
-            }
-            in.close();
-        } catch (IOException e) {
-            r.sendLog(this, LogLevel.WARNING, e);
-            errorCode = IHWFuture.ERRORCodes.UNKNOWN;
-            return;
-        }
-        errorCode = IHWFuture.ERRORCodes.OK;
-    }
 }

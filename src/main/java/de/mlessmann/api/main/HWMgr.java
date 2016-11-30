@@ -2,18 +2,20 @@ package de.mlessmann.api.main;
 
 import de.mlessmann.api.data.*;
 import de.mlessmann.api.logging.ILogListener;
+import de.mlessmann.api.logging.LogLevel;
 import de.mlessmann.common.HTTP;
 import de.mlessmann.common.annotations.API;
+import de.mlessmann.common.annotations.NotNull;
 import de.mlessmann.common.annotations.Nullable;
 import de.mlessmann.exceptions.StillConnectedException;
 import de.mlessmann.internals.data.HWProvider;
 import de.mlessmann.internals.logging.LMgr;
 import de.mlessmann.internals.networking.requests.RequestMgr;
 import de.mlessmann.internals.networking.requests.addhw.RequestAddHW;
-import de.mlessmann.internals.networking.requests.attachments.DownloadAttachmentFTRequest;
-import de.mlessmann.internals.networking.requests.attachments.PostAttachmentRequest;
-import de.mlessmann.internals.networking.requests.attachments.PushAttachmentFTRequest;
+import de.mlessmann.internals.networking.requests.attachments.GETAttachmentFTRequest;
+import de.mlessmann.internals.networking.requests.attachments.POSTAttachmentFTRequest;
 import de.mlessmann.internals.networking.requests.attachments.ReceiveAttachmentRequest;
+import de.mlessmann.internals.networking.requests.attachments.StoreAttachmentRequest;
 import de.mlessmann.internals.networking.requests.delhw.RequestDelHW;
 import de.mlessmann.internals.networking.requests.edithw.RequestEditHW;
 import de.mlessmann.internals.networking.requests.gethw.RequestGetHW;
@@ -102,7 +104,7 @@ public class HWMgr {
      */
 
     @API(APILevel = 1)
-    public void setProvider(IHWProvider p) throws StillConnectedException {
+    public void setProvider(@NotNull IHWProvider p) throws StillConnectedException {
         setServerAddress(p.getAddress());
         setPort(p.getPort());
     }
@@ -122,7 +124,7 @@ public class HWMgr {
     }
 
     @API(APILevel = 1)
-    public IHWFuture<Exception> connect(IHWProvider provider) throws StillConnectedException{
+    public IHWFuture<Exception> connect(@NotNull IHWProvider provider) throws StillConnectedException{
 
         if (connected)
             release(true);
@@ -195,7 +197,7 @@ public class HWMgr {
      * @return
      */
     @API(APILevel = 1)
-    public IHWFuture<IHWUser> login(String grp, String usr, String auth) {
+    public IHWFuture<IHWUser> login(@NotNull String grp,@NotNull String usr,@NotNull String auth) {
 
         RequestLogin req = new RequestLogin(lMgr);
 
@@ -215,7 +217,7 @@ public class HWMgr {
      * @return
      */
     @API(APILevel = 1)
-    public IHWFuture<IHWUser> login(String token) {
+    public IHWFuture<IHWUser> login(@NotNull String token) {
 
         RequestLogin req = new RequestLogin(lMgr);
 
@@ -277,7 +279,7 @@ public class HWMgr {
      * @return IHWFuture\<Boolean\>
      */
     @API(APILevel = 1)
-    public IHWFuture<Boolean> addHW(IHWCarrier hw) {
+    public IHWFuture<Boolean> addHW(@NotNull IHWCarrier hw) {
 
         RequestAddHW req = new RequestAddHW(lMgr);
 
@@ -299,7 +301,7 @@ public class HWMgr {
      * @return IHWFuture\<Boolean\>
      */
     @API(APILevel = 1)
-    public IHWFuture<Boolean> editHW(int yyyy, int MM, int dd, String oldID, IHWCarrier newHW) {
+    public IHWFuture<Boolean> editHW(int yyyy, int MM, int dd, @NotNull String oldID, @NotNull IHWCarrier newHW) {
 
         RequestEditHW req = new RequestEditHW(lMgr);
 
@@ -317,7 +319,7 @@ public class HWMgr {
      * @return IHWFuture\<Boolean\>
      */
     @API(APILevel = 1)
-    public IHWFuture<Boolean> delHW(IHWCarrier hw) {
+    public IHWFuture<Boolean> delHW(@NotNull IHWCarrier hw) {
 
         JSONArray dt = hw.getJSON().getJSONArray("date");
         String id = hw.getJSON().optString("id", "null");
@@ -332,7 +334,7 @@ public class HWMgr {
      * @param l Listener
      * @see LMgr#registerListener(ILogListener)
      */
-    public void registerLogListener(ILogListener l) {
+    public void registerLogListener(@NotNull ILogListener l) {
         lMgr.registerListener(l);
     }
 
@@ -342,7 +344,7 @@ public class HWMgr {
      * @param l Listener
      * @see LMgr#unregisterListener(ILogListener)
      */
-    public void unregisterLogListener(ILogListener l) {
+    public void unregisterLogListener(@NotNull ILogListener l) {
         lMgr.unregisterListener(l);
     }
 
@@ -371,24 +373,17 @@ public class HWMgr {
             sUrl = "http://schule.m-lessmann.de/hwserver/sources.json";
 
         String res = HTTP.GET(sUrl, proxy);
-
         JSONObject resp = new JSONObject(res);
-
         JSONArray serverList = resp.getJSONArray("servers");
-
         //TODO: Reminder for nameServers
-
         ArrayList<JSONObject> result = new ArrayList<JSONObject>();
-
         //For-Each not possible due to the org.json lib in android
         for (int i = 0; i < serverList.length(); i++) {
             Object o = serverList.get(i);
             if (o instanceof JSONObject)
                 result.add((JSONObject) o);
         }
-
         return result;
-
     }
 
     @API(APILevel = 2)
@@ -400,7 +395,7 @@ public class HWMgr {
     }
 
     @API(APILevel = 2)
-    public void setServerAddress(String serverAddress) throws StillConnectedException {
+    public void setServerAddress(@NotNull String serverAddress) throws StillConnectedException {
         if (connected)
             throw new StillConnectedException("Cannot change address when still connected!");
         this.serverAddress = serverAddress;
@@ -414,7 +409,7 @@ public class HWMgr {
     }
 
     @API(APILevel = 2)
-    public IHWFuture<Boolean> delHW(String id, int yyyy, int MM, int dd) {
+    public IHWFuture<Boolean> delHW(@NotNull String id, int yyyy, int MM, int dd) {
         RequestDelHW req = new RequestDelHW(lMgr);
         req.setID(id);
         req.setDate(yyyy, MM, dd);
@@ -433,8 +428,13 @@ public class HWMgr {
      */
     @API(APILevel = 2)
     @Nullable
-    public IHWFuture<IFTToken> requestAttachmentFromServer(IHWAttachmentLocation location) {
-        if (location.getLocType() == IHWAttachmentLocation.LocationType.SERVER) {
+    public IHWFuture<IFTToken> requestAttachmentFromServer(@NotNull IHWAttachment location) {
+        if (location.isVirtual()) {
+            lMgr.cdk_sendLog(this, LogLevel.WARNING,
+                    "HWATTACH Client may be requesting virtual attachments - Hope this case is handled by the FutureListener"
+            );
+        }
+        if (location.getLocType() == IHWAttachment.LocationType.SERVER) {
             ReceiveAttachmentRequest req = new ReceiveAttachmentRequest(lMgr);
             req.setLocation(location);
             req.reportMgr(reqMgr);
@@ -452,8 +452,8 @@ public class HWMgr {
      * @return StreamResult indicating some info on the status of the file
      */
     @API(APILevel = 2)
-    public IHWFuture<IHWStreamReadResult> downloadAttachmentFromServer(IHWAttachmentLocation loc, @Nullable IFTToken token, IHWStreamAcceptor acceptor) {
-        DownloadAttachmentFTRequest req = new DownloadAttachmentFTRequest(lMgr, loc, reqMgr, this);
+    public IHWFuture<IHWStreamReadResult> downloadAttachmentFromServer(@NotNull IHWAttachment loc,@NotNull IFTToken token, @NotNull IHWStreamAcceptor acceptor) {
+        GETAttachmentFTRequest req = new GETAttachmentFTRequest(lMgr, loc, reqMgr, this);
         req.setAcceptor(acceptor);
         req.setToken(token);
         new Thread(req).start();
@@ -463,12 +463,12 @@ public class HWMgr {
     /**
      * Pushes an attachment to the server
      * IMPORTANT: This attachment may !ONLY! be located on the web
-     * @see #pushAttachment(IHWAttachmentLocation, IFTToken, IHWStreamProvider)
+     * @see #pushAttachment(IHWAttachment, IFTToken, IHWStreamProvider)
      * @return IHWFuture\<NULL\> with error-code 'OK'
      */
     @API(APILevel = 2)
-    public IHWFuture<IFTToken> pushAttachmentRequest(IHWAttachmentLocation loc) {
-        PostAttachmentRequest req = new PostAttachmentRequest(lMgr);
+    public IHWFuture<IFTToken> pushAttachmentRequest(@NotNull IHWAttachment loc) {
+        StoreAttachmentRequest req = new StoreAttachmentRequest(lMgr);
         req.setLocation(loc);
         req.reportMgr(reqMgr);
         reqMgr.queueRequest(req);
@@ -480,8 +480,8 @@ public class HWMgr {
      * IMPORTANT: This attachment may !ONLY! be located on the server
      */
     @API(APILevel = 2)
-    public IHWFuture<IHWStreamWriteResult> pushAttachment(IHWAttachmentLocation attachment, IFTToken token, IHWStreamProvider provider) {
-        PushAttachmentFTRequest req = new PushAttachmentFTRequest(lMgr, attachment, reqMgr, this);
+    public IHWFuture<IHWStreamWriteResult> pushAttachment(@NotNull IHWAttachment attachment, @NotNull IFTToken token, @NotNull IHWStreamProvider provider) {
+        POSTAttachmentFTRequest req = new POSTAttachmentFTRequest(lMgr, attachment, reqMgr, this);
         req.setToken(token);
         req.setProvider(provider);
         new Thread(req).start();

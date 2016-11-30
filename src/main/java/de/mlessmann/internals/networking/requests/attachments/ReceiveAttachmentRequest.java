@@ -1,7 +1,7 @@
 package de.mlessmann.internals.networking.requests.attachments;
 
 import de.mlessmann.api.data.IFTToken;
-import de.mlessmann.api.data.IHWAttachmentLocation;
+import de.mlessmann.api.data.IHWAttachment;
 import de.mlessmann.api.data.IHWFuture;
 import de.mlessmann.api.data.IHWFutureProvider;
 import de.mlessmann.api.networking.CloseReason;
@@ -55,7 +55,7 @@ public class ReceiveAttachmentRequest implements IRequest, IMessageListener, IHW
     //------------------------------------- Payload/Result -------------------------------------------------------------
 
     @API(APILevel = 2)
-    public void setLocation(IHWAttachmentLocation obj) {
+    public void setLocation(IHWAttachment obj) {
         REQ.put("location", obj.getJSON());
     }
 
