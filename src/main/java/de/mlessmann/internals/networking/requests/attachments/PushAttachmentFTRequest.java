@@ -116,7 +116,7 @@ public class PushAttachmentFTRequest implements Runnable, IHWFutureProvider<IHWS
             byte[] buffer = new byte[2048];
             int total = 0;
             int read = 0;
-            while ((read = provider.read(buffer, 0, 2048)) >= -1) {
+            while ((read = provider.read(buffer, 0, 2048)) > -1) {
                 total += read;
                 out.write(buffer, 0, read);
             }

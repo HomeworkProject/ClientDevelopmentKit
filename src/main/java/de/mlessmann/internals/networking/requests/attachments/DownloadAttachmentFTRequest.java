@@ -115,7 +115,7 @@ public class DownloadAttachmentFTRequest implements Runnable, IHWFutureProvider<
             byte[] buffer = new byte[2048];
             int total = 0;
             int read = 0;
-            while ((read = in.read(buffer)) >= -1) {
+            while ((read = in.read(buffer)) > -1) {
                 total += read;
                 acceptor.write(buffer, 0, read);
             }
