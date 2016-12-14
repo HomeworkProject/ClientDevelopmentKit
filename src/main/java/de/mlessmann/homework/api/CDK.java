@@ -1,9 +1,6 @@
-package de.mlessmann.homework;
+package de.mlessmann.homework.api;
 
-import de.mlessmann.common.annotations.API;
-import de.mlessmann.common.annotations.NotNull;
-import de.mlessmann.common.annotations.Nullable;
-import de.mlessmann.common.annotations.Parallel;
+import de.mlessmann.common.annotations.*;
 import de.mlessmann.homework.api.future.IHWFuture;
 import de.mlessmann.homework.api.provider.IHWProvider;
 import de.mlessmann.homework.internal.logging.LogManager;
@@ -17,10 +14,14 @@ import java.util.List;
  */
 public class CDK {
 
-    private static CDK INST = null;
+    //#### ### ### ### ### INITIALIZER ### ### ### ### ### ###
     public static CDK getInstance() {
         return INST != null ? INST : new CDK();
     }
+    //#### ### ### ### ### INITIALIZER ### ### ### ### ### ###
+
+
+    private static CDK INST = null;
 
     private ILogReceiver log;
     private LogManager lMgr;
@@ -34,15 +35,23 @@ public class CDK {
         return this;
     }
 
-
     //=== === === === === === === === === === === === === === === === === === === === === === === === === === === ===
 
     @API
+    @NoLogin
     @Parallel
     @NotNull
     public IHWFuture<List<IHWProvider>> listProviders(@Nullable String url) {
         ProviderDiscovery disc = new ProviderDiscovery(lMgr, url);
         disc.start();
         return disc.getFuture();
+    }
+
+    @API
+    @NoLogin
+    @Parallel
+    @NotNull
+    public IHWFuture<ICDKConnection> connect(IHWProvider provider) {
+
     }
 }

@@ -1,6 +1,7 @@
 package de.mlessmann.homework.internal.providers;
 
 import de.mlessmann.common.annotations.NotNull;
+import de.mlessmann.homework.api.CDK;
 import de.mlessmann.homework.api.provider.IHWProvider;
 import org.json.JSONObject;
 
@@ -8,7 +9,7 @@ import org.json.JSONObject;
  * Created by Life4YourGames on 08.08.16.
  *
  * Used to provide information about a HWServer host.
- * @see de.mlessmann.homework.CDK#listProviders(String)
+ * @see CDK#listProviders(String)
  */
 public class HWProvider implements IHWProvider {
 
