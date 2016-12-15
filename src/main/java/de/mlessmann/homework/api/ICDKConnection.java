@@ -2,14 +2,24 @@ package de.mlessmann.homework.api;
 
 import de.mlessmann.common.annotations.*;
 import de.mlessmann.homework.api.future.IHWFuture;
+import de.mlessmann.homework.api.homework.IHWCarrier;
+import de.mlessmann.homework.api.homework.IHomework;
+import de.mlessmann.homework.api.homework.IHomeworkAttachment;
 import de.mlessmann.homework.api.provider.IHWProvider;
+import de.mlessmann.homework.api.session.IHWGroupMapping;
+import de.mlessmann.homework.api.session.IHWSession;
+import de.mlessmann.homework.api.session.IHWUser;
+import de.mlessmann.homework.api.stream.IHWStreamAcceptor;
+import de.mlessmann.homework.api.stream.IHWStreamProvider;
+
+import java.util.List;
 
 /**
  * Created by Life4YourGames on 14.12.16.
  */
 public interface ICDKConnection {
 
-    @NotNull
+    @Nullable
     IHWProvider getProvider();
 
     @API

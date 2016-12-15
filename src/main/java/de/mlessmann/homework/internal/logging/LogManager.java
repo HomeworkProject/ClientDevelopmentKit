@@ -1,10 +1,9 @@
 package de.mlessmann.homework.internal.logging;
 
+import de.mlessmann.homework.api.CDK;
+import de.mlessmann.homework.api.ICDKConnection;
+import de.mlessmann.homework.api.event.ICDKLogEvent;
 import de.mlessmann.homework.api.logging.IHWLogContext;
-import de.mlessmann.homework.api.logging.ILogListener;
-import de.mlessmann.homework.api.network.CloseReason;
-
-import java.util.ArrayList;
 
 import static de.mlessmann.homework.api.logging.LogType.*;
 
@@ -13,19 +12,33 @@ import static de.mlessmann.homework.api.logging.LogType.*;
  */
 public class LogManager {
 
-    private ArrayList<ILogListener> listeners;
+    private CDK cdk;
 
-    public LogManager() {
-        listeners = new ArrayList<ILogListener>();
+    public LogManager(CDK cdk) {
+        this.cdk = cdk;
     }
 
     //----------------------------------- Logging ---------------------------------------------
 
-    public synchronized void sendLog(IHWLogContext context) {
-        for (int i = listeners.size() - 1; i >= 0 ; i--) {
-            ILogListener l = listeners.get(i);
-            l.onMessage(context);
-        }
+    public synchronized void sendLog(final IHWLogContext context) {
+        cdk.fireEvent(
+                new ICDKLogEvent() {
+                    @Override
+                    public IHWLogContext getContext() {
+                        return context;
+                    }
+
+                    @Override
+                    public ICDKConnection getConnection() {
+                        return null;
+                    }
+
+                    @Override
+                    public Object getSender() {
+                        return this;
+                    }
+                }
+        );
     }
 
     public synchronized void sendLog(Object sender, int level, String msg) {
@@ -47,33 +60,4 @@ public class LogManager {
         LogContext c = new LogContext(sender, level, CDKEXC, e);
         sendLog(c);
     }
-
-    public synchronized void reportClosed(CloseReason rsn) {
-        for (int i = listeners.size() - 1; i >= 0 ; i--) {
-            ILogListener l = listeners.get(i);
-            l.onConnectionLost(rsn);
-        }
-    }
-
-    //----------------------------------- Register --------------------------------------------
-
-    /**
-     * Register a new listener
-     * The listener will be notified on all future events
-     * @param l The listener to register
-     */
-    public void registerListener(ILogListener l) {
-        if (!listeners.contains(l))
-            listeners.add(l);
-    }
-
-    /**
-     * Unregister a previously registered listener
-     * The listener will stop receiving events
-     * @param l The listener to unregister
-     */
-    public void unregisterListener(ILogListener l) {
-        listeners.remove(l);
-    }
-
 }

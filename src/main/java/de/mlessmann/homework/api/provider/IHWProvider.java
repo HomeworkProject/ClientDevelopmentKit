@@ -13,5 +13,7 @@ public interface IHWProvider {
     String getCountry();
     String getState();
 
+    IHWProviderConnInfo getConnInfo();
+
     JSONObject getJSON();
 }

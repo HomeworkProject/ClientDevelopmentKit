@@ -1,4 +1,4 @@
-package de.mlessmann.homework.api.network;
+package de.mlessmann.homework.api.event.network;
 
 /**
  * Created by Life4YourGames on 25.09.16.
@@ -16,10 +16,15 @@ public enum CloseReason {
     EXCEPTION,
 
     /**
-     * Connection has been killed via #kill()
-     * @see RequestMgr#kill()
+     * Connection has been softly disconnected
+     * e.g. when an connection attempt has been canceled
      */
-    KILL,
+    DISCONNECTED,
+
+    /**
+     * Connection has been killed via #kill()
+     */
+    KILLED,
 
     /**
      * Connection has been closed by the remote host
