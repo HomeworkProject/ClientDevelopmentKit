@@ -1,22 +1,17 @@
 package de.mlessmann.homework.api.event;
 
 import de.mlessmann.homework.api.event.network.CloseReason;
+import de.mlessmann.homework.api.event.network.ConnectionStatus;
 import de.mlessmann.homework.api.event.network.InterruptReason;
+
+import java.security.cert.X509Certificate;
 
 /**
  * Created by Life4YourGames on 15.12.16.
  */
 public interface ICDKConnectionEvent extends ICDKEvent {
 
-    ICDKConnectionEvent.Status getStatus();
-
-    public enum Status {
-        UNKNOWN,
-        CONNECTING,
-        CONNECTING_INTERRUPTED,
-        CONNECTED,
-        DISCONNECTED
-    }
+    ConnectionStatus getStatus();
 
     public interface Closed {
 
@@ -33,5 +28,19 @@ public interface ICDKConnectionEvent extends ICDKEvent {
          * @param cancelled Whether or not to cancel the connection attempt
          */
         void setCancelled(boolean cancelled);
+
+        public interface X509RejectInterrupt {
+
+            /**
+             * Return the certificate chain
+             */
+            X509Certificate[] getChain();
+
+            /**
+             * Allows to exempt the certificate once
+             * without having to trust it
+             */
+            void exemptOnce(boolean exemptOnce);
+        }
     }
 }

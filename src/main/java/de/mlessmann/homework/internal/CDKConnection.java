@@ -3,6 +3,7 @@ package de.mlessmann.homework.internal;
 import de.mlessmann.common.annotations.*;
 import de.mlessmann.homework.api.CDK;
 import de.mlessmann.homework.api.ICDKConnection;
+import de.mlessmann.homework.api.event.ICDKEvent;
 import de.mlessmann.homework.api.future.IHWFuture;
 import de.mlessmann.homework.api.homework.IHWCarrier;
 import de.mlessmann.homework.api.homework.IHomework;
@@ -13,6 +14,7 @@ import de.mlessmann.homework.api.session.IHWSession;
 import de.mlessmann.homework.api.session.IHWUser;
 import de.mlessmann.homework.api.stream.IHWStreamAcceptor;
 import de.mlessmann.homework.api.stream.IHWStreamProvider;
+import de.mlessmann.homework.internal.event.CDKEvent;
 
 import java.net.SocketAddress;
 import java.util.List;
@@ -118,5 +120,11 @@ public class CDKConnection extends CDKConnectionBase implements ICDKConnection {
     @NotNull
     public IHWFuture<Boolean> getHWServerAttachment(IHomeworkAttachment attach, IHWStreamAcceptor acceptor) {
         return null;
+    }
+
+    @Override
+    public void fireEvent(ICDKEvent event) {
+        ((CDKEvent) event).setConnection(this);
+        super.fireEvent(event);
     }
 }

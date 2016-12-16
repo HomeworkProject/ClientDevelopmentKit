@@ -1,8 +1,10 @@
 package de.mlessmann.homework.internal;
 
 import de.mlessmann.homework.api.CDK;
+import de.mlessmann.homework.api.event.ICDKEvent;
 import de.mlessmann.homework.api.provider.IHWProvider;
 import de.mlessmann.homework.api.provider.IHWProviderConnInfo;
+import de.mlessmann.homework.internal.event.CDKEvent;
 
 import java.net.SocketAddress;
 
@@ -11,13 +13,15 @@ import java.net.SocketAddress;
  */
 public class CDKConnectionBase extends Thread {
 
+    private CDK cdk;
+
     private IHWProvider provider;
     private SocketAddress address = null;
     private int port = 0;
     private int sslPort = 0;
 
     public CDKConnectionBase(CDK cdk) {
-
+        this.cdk = cdk;
     }
 
     public void setProvider(IHWProvider provider) {
@@ -35,5 +39,9 @@ public class CDKConnectionBase extends Thread {
     @Override
     public void run() {
 
+    }
+
+    public void fireEvent(ICDKEvent event) {
+        cdk.fireEvent(event);
     }
 }
