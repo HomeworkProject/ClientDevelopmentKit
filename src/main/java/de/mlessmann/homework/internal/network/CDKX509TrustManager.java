@@ -3,14 +3,19 @@ package de.mlessmann.homework.internal.network;
 import de.mlessmann.common.annotations.NotNull;
 import de.mlessmann.homework.api.event.network.InterruptReason;
 import de.mlessmann.homework.internal.CDKConnectionBase;
+import de.mlessmann.homework.internal.error.CDKCertificateCloseException;
 import de.mlessmann.homework.internal.error.CDKCertificateException;
 import de.mlessmann.homework.internal.event.CDKConnX509RejectEvent;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,6 +32,29 @@ public class CDKX509TrustManager implements X509TrustManager {
         this.acceptedIssuers = new ArrayList<X509Certificate>();
     }
 
+    public boolean doesTrust(X509Certificate[] chain) {
+        boolean trusted = false;
+        for (X509Certificate x509Certificate : chain) {
+            if (doesTrust(x509Certificate)) {
+                //Certificate trusted
+                trusted = true;
+                break;
+            }
+        }
+        return trusted;
+    }
+
+    public boolean doesTrust(X509Certificate cert) {
+        boolean trusted = false;
+        for (X509Certificate trustedCert : trustedCerts) {
+            if (trustedCert.equals(cert)) {
+                trusted = true;
+                break;
+            }
+        }
+        return trusted;
+    }
+
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
         throw new CDKCertificateException("Not designed to check client certificates!");
@@ -37,18 +65,13 @@ public class CDKX509TrustManager implements X509TrustManager {
         if (chain==null || chain.length<1 || authType==null || authType.isEmpty())
             throw new IllegalArgumentException("chain or authType invalid");
 
-        //TODO: Check certificate trust
-        CDKConnX509RejectEvent event = new CDKConnX509RejectEvent(this, null, InterruptReason.REJECTING_X509, chain);
+        if (doesTrust(chain)) return;
+        CDKConnX509RejectEvent event = new CDKConnX509RejectEvent(this, InterruptReason.REJECTING_X509, chain);
         connBase.fireEvent(event);
         //Check if cert has been exempted
         if (event.getExemptOnce()) return;
-
-
-        //TODO: Recheck certificate trust in case it has been trusted previously
-        event = new CDKConnX509RejectEvent(this, null, InterruptReason.REJECTED_X509, chain);
-        connBase.fireEvent(event);
-        //Check if cert has been exempted
-        if (event.getExemptOnce()) return;
+        if (doesTrust(chain)) return;
+        if (event.isCancelled()) throw new CDKCertificateCloseException("Untrusted certificate + Cancel requested!");
         throw new CDKCertificateException("Untrusted certificate");
     }
 
@@ -82,5 +105,11 @@ public class CDKX509TrustManager implements X509TrustManager {
     public void untrustCertificates(X509Certificate[] certs) {
         for (X509Certificate c : certs)
             untrustCertificate(c);
+    }
+
+    public SSLContext createSSLContext() throws NoSuchAlgorithmException, KeyManagementException {
+        SSLContext ctx = SSLContext.getDefault();
+        ctx.init(null, new TrustManager[]{this}, new SecureRandom());
+        return ctx;
     }
 }

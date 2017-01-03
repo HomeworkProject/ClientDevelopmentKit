@@ -5,5 +5,5 @@ package de.mlessmann.homework.api.event;
  */
 public interface ICDKExceptionEvent extends ICDKEvent {
 
-    Throwable getException();
+    Exception getException();
 }

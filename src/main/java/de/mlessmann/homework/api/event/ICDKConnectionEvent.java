@@ -13,12 +13,12 @@ public interface ICDKConnectionEvent extends ICDKEvent {
 
     ConnectionStatus getStatus();
 
-    public interface Closed {
+    public interface Closed extends ICDKConnectionEvent {
 
         CloseReason getCloseReason();
     }
 
-    public interface Interrupted {
+    public interface Interrupted extends ICDKConnectionEvent {
 
         InterruptReason getInterruptReason();
 
@@ -29,7 +29,9 @@ public interface ICDKConnectionEvent extends ICDKEvent {
          */
         void setCancelled(boolean cancelled);
 
-        public interface X509RejectInterrupt {
+        boolean isCancelled();
+
+        public interface X509RejectInterrupt extends ICDKConnectionEvent.Interrupted {
 
             /**
              * Return the certificate chain

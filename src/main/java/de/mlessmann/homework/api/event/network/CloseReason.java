@@ -16,8 +16,20 @@ public enum CloseReason {
     EXCEPTION,
 
     /**
+     * Failed to connect:
+     * SLL failed and connection attempt got cancelled or plaintext failed
+     * If cause is an exception {@link de.mlessmann.homework.api.event.ICDKExceptionEvent} is also implemented
+     */
+    CONNECT_FAILED,
+
+    /**
+     * Certificate related -> Cert wasn't accepted and plaintext got cancelled
+     * equals DISCONNECTED
+     */
+    REJECTED_X509,
+
+    /**
      * Connection has been softly disconnected
-     * e.g. when an connection attempt has been canceled
      */
     DISCONNECTED,
 

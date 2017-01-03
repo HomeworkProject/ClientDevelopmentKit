@@ -1,6 +1,5 @@
 package de.mlessmann.homework.internal.event;
 
-import de.mlessmann.homework.api.ICDKConnection;
 import de.mlessmann.homework.api.event.ICDKConnectionEvent;
 import de.mlessmann.homework.api.event.network.InterruptReason;
 
@@ -14,8 +13,8 @@ public class CDKConnX509RejectEvent extends CDKConnInterruptEvent implements ICD
     private X509Certificate[] chain;
     private boolean pardon;
 
-    public CDKConnX509RejectEvent(Object sender, ICDKConnection connection, InterruptReason reason, X509Certificate[] chain) {
-        super(sender, connection, reason);
+    public CDKConnX509RejectEvent(Object sender, InterruptReason reason, X509Certificate[] chain) {
+        super(sender, reason);
         this.chain = chain;
         this.pardon = false;
     }

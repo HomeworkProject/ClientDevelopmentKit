@@ -23,7 +23,6 @@ public class CDK {
     }
     //#### ### ### ### ### INITIALIZER ### ### ### ### ### ###
 
-
     private static CDK INST = null;
 
     private List<ICDKListener> listeners;

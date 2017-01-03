@@ -11,6 +11,7 @@ import de.mlessmann.homework.api.session.IHWSession;
 import de.mlessmann.homework.api.session.IHWUser;
 import de.mlessmann.homework.api.stream.IHWStreamAcceptor;
 import de.mlessmann.homework.api.stream.IHWStreamProvider;
+import de.mlessmann.homework.internal.network.CDKX509TrustManager;
 
 import java.util.List;
 
@@ -80,4 +81,7 @@ public interface ICDKConnection {
     @Parallel
     @NotNull
     IHWFuture<Boolean> getHWServerAttachment(IHomeworkAttachment attach, IHWStreamAcceptor acceptor);
+
+    //SSL
+    CDKX509TrustManager getTrustManager();
 }

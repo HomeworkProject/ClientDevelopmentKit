@@ -26,12 +26,13 @@ public enum InterruptReason {
 
      * Will be an instance of {@link de.mlessmann.homework.api.event.ICDKConnectionEvent.Interrupted.X509RejectInterrupt}
      */
-    REJECTING_X509,
+    REJECTING_X509
 
     /**
      * Certificate related -> if not cancelled the connection will be tried via. a plaintext connection
 
      * Will be an instance of {@link de.mlessmann.homework.api.event.ICDKConnectionEvent.Interrupted.X509RejectInterrupt}
      */
-    REJECTED_X509
+    //"Changed" TO CloseReason
+    //REJECTED_X509
 }

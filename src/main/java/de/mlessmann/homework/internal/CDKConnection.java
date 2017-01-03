@@ -15,8 +15,8 @@ import de.mlessmann.homework.api.session.IHWUser;
 import de.mlessmann.homework.api.stream.IHWStreamAcceptor;
 import de.mlessmann.homework.api.stream.IHWStreamProvider;
 import de.mlessmann.homework.internal.event.CDKEvent;
+import de.mlessmann.homework.internal.network.CDKX509TrustManager;
 
-import java.net.SocketAddress;
 import java.util.List;
 
 /**
@@ -29,9 +29,9 @@ public class CDKConnection extends CDKConnectionBase implements ICDKConnection {
         super.setProvider(provider);
     }
 
-    public CDKConnection(CDK cdk, SocketAddress addr, int port, int sslPort) {
+    public CDKConnection(CDK cdk, String host, int port, int sslPort) {
         super(cdk);
-        super.setProvider(addr, port, sslPort);
+        super.setProvider(host, port, sslPort);
     }
 
     //=== === === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -126,5 +126,11 @@ public class CDKConnection extends CDKConnectionBase implements ICDKConnection {
     public void fireEvent(ICDKEvent event) {
         ((CDKEvent) event).setConnection(this);
         super.fireEvent(event);
+    }
+
+    //SSL
+    @Override
+    public CDKX509TrustManager getTrustManager() {
+        return super.getTrustManager();
     }
 }

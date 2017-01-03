@@ -3,6 +3,7 @@ package de.mlessmann.homework.internal.providers;
 import de.mlessmann.common.annotations.NotNull;
 import de.mlessmann.homework.api.CDK;
 import de.mlessmann.homework.api.provider.IHWProvider;
+import de.mlessmann.homework.api.provider.IHWProviderConnInfo;
 import org.json.JSONObject;
 
 /**
@@ -68,4 +69,27 @@ public class HWProvider implements IHWProvider {
         return json;
     }
 
+    @Override
+    public IHWProviderConnInfo getConnInfo() {
+        JSONObject conn = json.getJSONObject("connection");
+        final String host = conn.getString("host");
+        final int sslPort = conn.getInt("ssl");
+        final int port = conn.getInt("plain");
+        return new IHWProviderConnInfo() {
+            @Override
+            public String getHost() {
+                return host;
+            }
+
+            @Override
+            public int getPort() {
+                return port;
+            }
+
+            @Override
+            public int getSSLPort() {
+                return sslPort;
+            }
+        };
+    }
 }
