@@ -1,6 +1,7 @@
 package de.mlessmann.homework.api;
 
 import de.mlessmann.common.annotations.*;
+import de.mlessmann.homework.api.filetransfer.IFTToken;
 import de.mlessmann.homework.api.future.IHWFuture;
 import de.mlessmann.homework.api.homework.IHWCarrier;
 import de.mlessmann.homework.api.homework.IHomework;
@@ -11,6 +12,8 @@ import de.mlessmann.homework.api.session.IHWSession;
 import de.mlessmann.homework.api.session.IHWUser;
 import de.mlessmann.homework.api.stream.IHWStreamAcceptor;
 import de.mlessmann.homework.api.stream.IHWStreamProvider;
+import de.mlessmann.homework.api.stream.IHWStreamReadResult;
+import de.mlessmann.homework.api.stream.IHWStreamWriteResult;
 import de.mlessmann.homework.internal.network.CDKX509TrustManager;
 
 import java.util.List;
@@ -49,12 +52,12 @@ public interface ICDKConnection {
     @API
     @Parallel
     @NotNull
-    IHWFuture<Boolean> editHW(IHWCarrier oldHW, IHWCarrier newHW);
+    IHWFuture<Boolean> editHW(IHomework oldHW, IHWCarrier newHW);
 
     @API
     @Parallel
     @NotNull
-    IHWFuture<Boolean> delHW(IHWCarrier oldHW);
+    IHWFuture<Boolean> delHW(IHomework oldHW);
 
     @API
     @Parallel
@@ -67,20 +70,31 @@ public interface ICDKConnection {
     IHWFuture<List<IHomework>> getHWBetween(int yyyyFrom, int MMFrom, int ddFrom, int yyyyTo, int MMTo, int ddTo);
 
     //Attachments
+    @Deprecated
     @API
     @Parallel
-    @NotNull
+    //@NotNull
     IHWFuture<Boolean> postHWWebAttachment(IHomeworkAttachment attach);
 
     @API
     @Parallel
     @NotNull
-    IHWFuture<Boolean> postHWServerAttachment(IHomeworkAttachment attach, IHWStreamProvider provider);
+    IHWFuture<IFTToken> reqPostHWServerAttachment(IHomeworkAttachment attach);
 
     @API
     @Parallel
     @NotNull
-    IHWFuture<Boolean> getHWServerAttachment(IHomeworkAttachment attach, IHWStreamAcceptor acceptor);
+    IHWFuture<IFTToken> reqGetHWServerAttachment(IHomeworkAttachment attach);
+
+    @API
+    @Parallel
+    @NotNull
+    IHWFuture<IHWStreamWriteResult> postHWServerAttachment(IHomeworkAttachment attach, IFTToken token, IHWStreamProvider provider);
+
+    @API
+    @Parallel
+    @NotNull
+    IHWFuture<IHWStreamReadResult> getHWServerAttachment(IHomeworkAttachment attach, IFTToken token, IHWStreamAcceptor acceptor);
 
     //SSL
     CDKX509TrustManager getTrustManager();

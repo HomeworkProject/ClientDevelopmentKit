@@ -7,17 +7,23 @@ import de.mlessmann.common.annotations.Nullable;
  */
 public final class Error {
 
+    //Allows: someError == Error.OK ;)
     public static final Error OK = new Error(ErrorCode.OK, null);
 
-    public static Error of(int errorCode, Object error) {
+    public static Error of(int errorCode, Exception error) {
         if (errorCode == 200) return OK;
         return new Error(errorCode, error);
     }
 
-    private int code;
-    private Object err;
+    public static Error of(int errorCode) {
+        if (errorCode == 200) return OK;
+        return new Error(errorCode, null);
+    }
 
-    private Error(int errorCode, Object error) {
+    private int code;
+    private Exception err;
+
+    private Error(int errorCode, Exception error) {
         this.code = errorCode;
         this.err = error;
     }
@@ -29,11 +35,11 @@ public final class Error {
     }
 
     @Nullable
-    public Object getExc() {
+    public Exception getExc() {
         return err;
     }
 
-    public boolean hasError() {
+    public boolean hasException() {
         return err != null;
     }
 
@@ -41,6 +47,7 @@ public final class Error {
 
     public interface ErrorCode {
 
+        public static final int CLOSED = -2;
         public static final int UNKNOWN = -1;
         public static final int OK = 200;
 

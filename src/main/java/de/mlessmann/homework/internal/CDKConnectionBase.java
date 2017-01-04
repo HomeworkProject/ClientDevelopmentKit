@@ -11,6 +11,8 @@ import de.mlessmann.homework.api.provider.IHWProviderConnInfo;
 import de.mlessmann.homework.internal.error.CDKCertificateCloseException;
 import de.mlessmann.homework.internal.event.*;
 import de.mlessmann.homework.internal.network.CDKX509TrustManager;
+import de.mlessmann.homework.internal.network.IHWConnListener;
+import de.mlessmann.homework.internal.network.requests.greeting.GreetListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +22,9 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Life4YourGames on 15.12.16.
@@ -40,9 +45,14 @@ public class CDKConnectionBase extends Thread {
     private BufferedWriter writer;
     private boolean terminated;
 
+    private List<IHWConnListener> listeners;
+    private List<Integer> cIDs;
+
     public CDKConnectionBase(CDK cdk) {
         this.cdk = cdk;
         trustManager = new CDKX509TrustManager(this);
+        listeners = new ArrayList<>();
+        cIDs = new ArrayList<Integer>();
     }
 
     public void setProvider(IHWProvider provider) {
@@ -96,7 +106,9 @@ public class CDKConnectionBase extends Thread {
             this.fireEvent(new CDKConnCloseEvent(this, CloseReason.CONNECT_FAILED));
             return;
         }
-        this.fireEvent(new CDKConnEvent(this, ConnectionStatus.CONNECTED));
+        //Moved to greeting listener
+        //this.fireEvent(new CDKConnEvent(this, ConnectionStatus.CONNECTED));
+        this.registerListener(new GreetListener(cdk.getLogManager(), this));
 
         main();
     }
@@ -140,11 +152,35 @@ public class CDKConnectionBase extends Thread {
     }
 
     private void processJSON(JSONObject obj) {
-
+        int cID = obj.optInt("commID", 0);
+        Integer k = (cID*-1);
+        if (cIDs.indexOf(k) > -1) {
+            cIDs.remove(k);
+        }
+        for (int i = listeners.size()-1; i >= 0; i--)
+            listeners.get(i).processJSON(obj);
     }
 
-    public void sendJSON(JSONObject obj) {
+    private synchronized int genCID() {
+        Random rnd = new Random();
+        Integer i = 0;
+        do {
+            i = rnd.nextInt();
+        } while (cIDs.indexOf(i) > -1);
+        return i;
+    }
+
+    public int sendJSON(JSONObject obj) {
+        int cID = obj.optInt("commID", 0);
+        if (cID == 0) {
+            cID = genCID();
+            obj.put("commID", cID);
+        }
+        Integer k = (cID*-1);
+        if (!(cIDs.indexOf(k) > -1))
+            cIDs.add(k);
         sendMessage(obj.toString(0).replaceAll("\n", "") + "\n");
+        return cID;
     }
 
     private void sendMessage(String msg) {
@@ -156,6 +192,16 @@ public class CDKConnectionBase extends Thread {
         }
     }
 
+    public void registerListener(IHWConnListener listener) {
+        listeners.add(listener);
+    }
+
+    public void unregisterListener(IHWConnListener listener) {
+        listeners.remove(listener);
+    }
+
+    //----
+
     public void kill() {
         terminated = true;
         this.fireEvent(new CDKConnCloseEvent(this, CloseReason.KILLED));
@@ -166,7 +212,13 @@ public class CDKConnectionBase extends Thread {
     }
 
     //Getter
+    protected CDK getCDK() {
+        return cdk;
+    }
+
     public CDKX509TrustManager getTrustManager() {
         return trustManager;
     }
+
+    public String getHost() { return host; }
 }

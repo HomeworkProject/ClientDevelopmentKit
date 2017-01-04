@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class CDK {
 
+    public static final String PROTOVERSION = API.PROTOVERSION;
+
     //#### ### ### ### ### INITIALIZER ### ### ### ### ### ###
     public static CDK getInstance() {
         return INST != null ? INST : new CDK();
@@ -72,5 +74,9 @@ public class CDK {
     public void fireEvent(ICDKEvent event) {
         for (int i = listeners.size(); i >0; i--)
             listeners.get(i).onEvent(event);
+    }
+
+    public LogManager getLogManager() {
+        return lMgr;
     }
 }
