@@ -214,4 +214,15 @@ public class CDKConnection extends CDKConnectionBase implements ICDKConnection {
         return super.getCDK().getLogManager();
     }
 
+    //Kill
+    @Override
+    public void kill() {
+        super.kill();
+    }
+
+    //Close
+    @Override
+    public boolean close() {
+        return super.close();
+    }
 }

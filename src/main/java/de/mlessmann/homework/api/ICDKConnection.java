@@ -98,4 +98,10 @@ public interface ICDKConnection {
 
     //SSL
     CDKX509TrustManager getTrustManager();
+
+    //Close
+    boolean close();
+
+    //Kill
+    void kill();
 }

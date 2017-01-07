@@ -202,7 +202,25 @@ public class CDKConnectionBase extends Thread {
 
     //----
 
+    public boolean close() {
+        try {
+            if (sock!=null && !sock.isClosed())
+                sock.close();
+        } catch (IOException e) {
+            return false;
+        }
+        this.fireEvent(new CDKConnCloseEvent(this, CloseReason.DISCONNECTED));
+        return true;
+    }
+
     public void kill() {
+        try {
+            if (sock!=null && !sock.isClosed())
+                sock.close();
+            sock = null;
+            socketAddr = null;
+        } catch (IOException e) {
+        }
         terminated = true;
         this.fireEvent(new CDKConnCloseEvent(this, CloseReason.KILLED));
     }
