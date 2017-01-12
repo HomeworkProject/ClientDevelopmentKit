@@ -68,6 +68,11 @@ public interface ICDKConnection {
     @API
     @Parallel
     @NotNull
+    IHWFuture<Boolean> delHW(String id, int yyyy, int MM, int dd);
+
+    @API
+    @Parallel
+    @NotNull
     IHWFuture<Boolean> delHW(IHomework oldHW);
 
     @API
