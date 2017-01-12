@@ -139,6 +139,17 @@ public class CDKConnection extends CDKConnectionBase implements ICDKConnection {
     @API
     @Parallel
     @NotNull
+    public IHWFuture<Boolean> delHW(String id, int yyyy, int MM, int dd) {
+        RequestDelHW r = new RequestDelHW(getLogManager(), this);
+        r.setDate(yyyy, MM, dd);
+        r.setID(id);
+        r.execute();
+        return r.getFuture();
+    }
+
+    @API
+    @Parallel
+    @NotNull
     public IHWFuture<Boolean> delHW(IHomework oldHW) {
         RequestDelHW r = new RequestDelHW(getLogManager(), this);
         r.setDate(oldHW.getDate()[0], oldHW.getDate()[1], oldHW.getDate()[2]);
