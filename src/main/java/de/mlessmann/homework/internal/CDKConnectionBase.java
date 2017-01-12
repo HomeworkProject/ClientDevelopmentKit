@@ -229,10 +229,10 @@ public class CDKConnectionBase extends Thread {
         try {
             if (sock!=null && !sock.isClosed())
                 sock.close();
-            sock = null;
-            socketAddr = null;
         } catch (IOException e) {
         }
+        sock = null;
+        socketAddr = null;
         terminated = true;
         this.fireEvent(new CDKConnCloseEvent(this, CloseReason.KILLED));
     }
