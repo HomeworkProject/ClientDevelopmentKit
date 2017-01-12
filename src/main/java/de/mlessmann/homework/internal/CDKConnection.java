@@ -30,6 +30,7 @@ import de.mlessmann.homework.internal.network.requests.edithw.RequestEditHW;
 import de.mlessmann.homework.internal.network.requests.gethw.RequestGetHW;
 import de.mlessmann.homework.internal.network.requests.list.RequestList;
 import de.mlessmann.homework.internal.network.requests.login.RequestLogin;
+import de.mlessmann.homework.internal.network.requests.version.RequestVersion;
 
 import java.util.List;
 
@@ -43,9 +44,21 @@ public class CDKConnection extends CDKConnectionBase implements ICDKConnection {
         super.setProvider(provider);
     }
 
+    public CDKConnection(CDK cdk, IHWProvider provider, boolean includeVersionCheck) {
+        super(cdk);
+        super.setProvider(provider);
+        super.setIncludeVersionCheck(includeVersionCheck);
+    }
+
     public CDKConnection(CDK cdk, String host, int port, int sslPort) {
         super(cdk);
         super.setProvider(host, port, sslPort);
+    }
+
+    public CDKConnection(CDK cdk, String host, int port, int sslPort, boolean includeVersionCheck) {
+        super(cdk);
+        super.setProvider(host, port, sslPort);
+        super.setIncludeVersionCheck(includeVersionCheck);
     }
 
     //=== === === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -53,6 +66,16 @@ public class CDKConnection extends CDKConnectionBase implements ICDKConnection {
     @Nullable
     public IHWProvider getProvider() {
         return null;
+    }
+
+    @API
+    @NoLogin
+    @NotNull
+    @Parallel
+    public IHWFuture<Boolean> isCompatible() {
+        RequestVersion r = new RequestVersion(getLogManager(), this);
+        r.execute();
+        return r.getFuture();
     }
 
     @API

@@ -1,5 +1,7 @@
 package de.mlessmann.homework.api.event.network;
 
+import de.mlessmann.homework.api.ICDKConnection;
+
 /**
  * Created by Life4YourGames on 15.12.16.
  * Connection attempt has been interrupted
@@ -10,6 +12,13 @@ public enum InterruptReason {
      * Unknown reason
      */
     UNKNOWN,
+
+    /**
+     * RequestVersion returned a negative value
+     * {@link de.mlessmann.homework.api.event.ICDKConnectionEvent.Interrupted#setCancelled(boolean)} determines whether to close or not
+     * if cancelled, connection is terminated using {@link ICDKConnection#close()} thus, a close event follows.
+     */
+    POSSIBLY_INCOMPATIBLE,
 
     /**
      * SSL connection failed -> if not cancelled the connection will be tried via. a plaintext connection

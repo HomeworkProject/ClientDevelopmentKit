@@ -23,8 +23,19 @@ import java.util.List;
  */
 public interface ICDKConnection {
 
+    /**
+     * Starts the thread
+     */
+    @API
+    void start();
+
     @Nullable
     IHWProvider getProvider();
+
+    @API
+    @NoLogin
+    @Parallel
+    IHWFuture<Boolean> isCompatible();
 
     @API
     @NoLogin

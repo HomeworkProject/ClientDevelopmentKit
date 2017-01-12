@@ -26,9 +26,6 @@ public class RequestVersion implements IHWConnListener {
 
     private String id;
     private int cid;
-    private Object error = null;
-    private int errorCode = 0;
-    private Boolean isCompatible = null;
     private HWFuture<Boolean> future;
     private CDKConnectionBase conn;
     private LogManager lMgr;
@@ -77,8 +74,7 @@ public class RequestVersion implements IHWConnListener {
             String version = msg.getString("protoVersion");
             String currentVersion = CDK.PROTOVERSION;
 
-            isCompatible = Common.areCompatible(version, currentVersion);
-
+            future.setPayload(Common.areCompatible(version, currentVersion));
             conn.unregisterListener(this);
             //reqMgr.unlockQueue(this);
             future.pokeListeners();

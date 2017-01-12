@@ -55,6 +55,28 @@ public class CDK {
         return new CDKConnection(this, provider);
     }
 
+    @API
+    @NoLogin
+    @NotNull
+    public ICDKConnection connect(IHWProvider provider, boolean includeVersionCheck) {
+        return new CDKConnection(this, provider, includeVersionCheck);
+    }
+
+    @API
+    @NoLogin
+    @NotNull
+    public ICDKConnection connect(String host, int port, int sslPort) {
+        return new CDKConnection(this, host, port, sslPort);
+    }
+
+    @API
+    @NoLogin
+    @NotNull
+    public ICDKConnection connect(String host, int port, int sslPort, boolean includeVersionCheck) {
+        return new CDKConnection(this, host, port, sslPort, includeVersionCheck);
+    }
+
+
     //=== === === === === === === === === === === === === === === === === === === === === === === === === === === ===
 
     @API(APILevel = 2)

@@ -38,6 +38,7 @@ public class CDKConnectionBase extends Thread {
     private String host = null;
     private int port = 0;
     private int sslPort = 0;
+    private boolean checkVersion = true;
 
     private Socket sock;
     private SocketAddress socketAddr;
@@ -65,6 +66,14 @@ public class CDKConnectionBase extends Thread {
         this.host = host;
         this.port = port;
         this.sslPort = sslPort;
+    }
+
+    public void setIncludeVersionCheck(boolean b) {
+        this.checkVersion = b;
+    }
+
+    public boolean checksVersion() {
+        return checkVersion;
     }
 
     @Override
@@ -203,9 +212,11 @@ public class CDKConnectionBase extends Thread {
     //----
 
     public boolean close() {
+        if (terminated) return true;
         try {
             if (sock!=null && !sock.isClosed())
                 sock.close();
+            terminated = true;
         } catch (IOException e) {
             return false;
         }
@@ -214,6 +225,7 @@ public class CDKConnectionBase extends Thread {
     }
 
     public void kill() {
+        if (terminated) return;
         try {
             if (sock!=null && !sock.isClosed())
                 sock.close();
