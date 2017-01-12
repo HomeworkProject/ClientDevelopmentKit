@@ -123,7 +123,6 @@ public class CDKConnectionBase extends Thread {
     }
 
     private void main() {
-
         try {
             sock.setSoTimeout(500);
             reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
@@ -156,7 +155,6 @@ public class CDKConnectionBase extends Thread {
             } catch (JSONException e) {
                 this.fireEvent(new CDKExceptionEvent(this, e));
             }
-
         }
     }
 
@@ -179,7 +177,7 @@ public class CDKConnectionBase extends Thread {
         return i;
     }
 
-    public int sendJSON(JSONObject obj) {
+    public synchronized int sendJSON(JSONObject obj) {
         int cID = obj.optInt("commID", 0);
         if (cID == 0) {
             cID = genCID();
@@ -192,7 +190,7 @@ public class CDKConnectionBase extends Thread {
         return cID;
     }
 
-    private void sendMessage(String msg) {
+    private synchronized void sendMessage(String msg) {
         try {
             writer.write(msg);
             writer.flush();
@@ -211,12 +209,11 @@ public class CDKConnectionBase extends Thread {
 
     //----
 
-    public boolean close() {
+    public synchronized boolean close() {
         if (terminated) return true;
         try {
             if (sock!=null && !sock.isClosed())
                 sock.close();
-            terminated = true;
         } catch (IOException e) {
             return false;
         }
@@ -224,7 +221,7 @@ public class CDKConnectionBase extends Thread {
         return true;
     }
 
-    public void kill() {
+    public synchronized void kill() {
         if (terminated) return;
         try {
             if (sock!=null && !sock.isClosed())
@@ -237,7 +234,13 @@ public class CDKConnectionBase extends Thread {
         this.fireEvent(new CDKConnCloseEvent(this, CloseReason.KILLED));
     }
 
-    public void fireEvent(ICDKEvent event) {
+    public synchronized void fireEvent(ICDKEvent event) {
+        if (event instanceof ICDKConnectionEvent.Closed) {
+            for (int i = listeners.size()-1; i>=0; i--)
+                listeners.get(i).onClosed(((ICDKConnectionEvent.Closed) event).getCloseReason());
+            //Consider to be terminated
+            terminated = true;
+        }
         cdk.fireEvent(event);
     }
 
