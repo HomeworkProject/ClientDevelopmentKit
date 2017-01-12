@@ -94,7 +94,7 @@ public class CDK {
     //=== === === === === === === === === === === === === === === === === === === === === === === === === === === ===
 
     public void fireEvent(ICDKEvent event) {
-        for (int i = listeners.size(); i >0; i--)
+        for (int i = listeners.size()-1; i>0; i--)
             listeners.get(i).onEvent(event);
     }
 
