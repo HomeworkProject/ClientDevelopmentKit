@@ -21,7 +21,7 @@ public class CDK {
 
     //#### ### ### ### ### INITIALIZER ### ### ### ### ### ###
     public static CDK getInstance() {
-        return INST != null ? INST : new CDK();
+        return INST != null ? INST : (INST = new CDK());
     }
     //#### ### ### ### ### INITIALIZER ### ### ### ### ### ###
 
