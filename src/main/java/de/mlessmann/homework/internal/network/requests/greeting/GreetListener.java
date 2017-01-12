@@ -77,6 +77,7 @@ public class GreetListener implements IHWConnListener {
                             }
                         }
                     });
+                    vReq.execute();
                 }
                 conn.unregisterListener(this);
             }
