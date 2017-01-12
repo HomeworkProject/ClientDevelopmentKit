@@ -23,26 +23,21 @@ public class HWProvider implements IHWProvider {
     public boolean isValid() {
         try {
             //Nonexistent keys should raise an exception
-            json.getString("address");
             json.getString("name");
             json.getString("postal");
             json.getString("country");
             json.getString("state");
             json.getString("city");
-            json.getJSONObject("optional");
+            //json.getJSONObject("optional");
 
             JSONObject conn = json.getJSONObject("connection");
             conn.getString("host");
-            conn.getInt("ssl");
-            conn.getInt("plain");
+            conn.getInt("sslPort");
+            conn.getInt("plainPort");
         } catch (Exception e) {
             return false;
         }
         return true;
-    }
-
-    public String getAddress() {
-        return json.getString("address");
     }
 
     public String getName() {
@@ -73,8 +68,8 @@ public class HWProvider implements IHWProvider {
     public IHWProviderConnInfo getConnInfo() {
         JSONObject conn = json.getJSONObject("connection");
         final String host = conn.getString("host");
-        final int sslPort = conn.getInt("ssl");
-        final int port = conn.getInt("plain");
+        final int sslPort = conn.getInt("sslPort");
+        final int port = conn.getInt("plainPort");
         return new IHWProviderConnInfo() {
             @Override
             public String getHost() {

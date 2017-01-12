@@ -8,7 +8,6 @@ import org.json.JSONObject;
 public interface IHWProvider {
 
     String getName();
-    String getAddress();
     String getPostal();
     String getCity();
     String getCountry();
