@@ -142,12 +142,11 @@ public class CDKConnectionBase extends Thread {
                 if (line == null) {
                     this.fireEvent(new CDKConnCloseEvent(this, CloseReason.LOST));
                     terminated = true;
-                } else if ("pong".equals(line)) {
-                    timeOutCount = 0;
-                } else {
+                } else if (line.length() > 6) {
                     JSONObject o = new JSONObject(line);
                     processJSON(o);
                 }
+                if (line != null) timeOutCount = 0;
             } catch (IOException e) {
                 if (e instanceof SocketTimeoutException) {
                     timeOutCount++;
