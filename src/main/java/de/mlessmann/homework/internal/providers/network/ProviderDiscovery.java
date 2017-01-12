@@ -21,7 +21,7 @@ import static de.mlessmann.common.HTTP.GET;
  */
 public class ProviderDiscovery extends Thread {
 
-    public static final String defURL = "http://schule.m-lessmann.de/hwserver/providerDiscovery/0.2/sources.json";
+    public static final String defURL = "https://dev.m-lessmann.de/hwserver/providerDiscovery/0.2/sources.json";
 
     private LogManager lmgr;
     private String sUrl;
