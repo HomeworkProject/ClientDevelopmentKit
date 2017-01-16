@@ -62,7 +62,7 @@ public class StoreAttachmentRequest implements IHWConnListener {
 
     public void execute() {
         conn.registerListener(this);
-        cid = conn.sendJSON(REQ);
+        cid = conn.queueJSON(REQ);
     }
 
     //------------------------------------ IHWConnListener ------------------------------------------------------------

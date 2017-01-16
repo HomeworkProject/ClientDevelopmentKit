@@ -63,7 +63,7 @@ public class ReceiveAttachmentRequest implements IHWConnListener {
 
     public void execute() {
         conn.registerListener(this);
-        cid = conn.sendJSON(REQ);
+        cid = conn.queueJSON(REQ);
     }
 
     //------------------------------------ IHWConnListener ------------------------------------------------------------

@@ -48,12 +48,14 @@ public class CDKConnectionBase extends Thread {
 
     private List<IHWConnListener> listeners;
     private List<Integer> cIDs;
+    private List<String> messages;
 
     public CDKConnectionBase(CDK cdk) {
         this.cdk = cdk;
         trustManager = new CDKX509TrustManager(this);
         listeners = new ArrayList<>();
         cIDs = new ArrayList<Integer>();
+        messages = new ArrayList<String>();
     }
 
     public void setProvider(IHWProvider provider) {
@@ -147,9 +149,17 @@ public class CDKConnectionBase extends Thread {
                     processJSON(o);
                 }
                 if (line != null) timeOutCount = 0;
+                if (messages.size() > 0) {
+                    for (String message : messages) {
+                        sendMessage(message);
+                    }
+                    messages.clear();
+                }
             } catch (IOException e) {
                 if (e instanceof SocketTimeoutException) {
                     timeOutCount++;
+                } else {
+                    this.fireEvent(new CDKConnCloseExcEvent(this, CloseReason.EXCEPTION, e));
                 }
             } catch (JSONException e) {
                 this.fireEvent(new CDKExceptionEvent(this, e));
@@ -174,6 +184,19 @@ public class CDKConnectionBase extends Thread {
             i = rnd.nextInt();
         } while (cIDs.indexOf(i) > -1);
         return i;
+    }
+
+    public synchronized int queueJSON(JSONObject obj) {
+        int cID = obj.optInt("commID", 0);
+        if (cID == 0) {
+            cID = genCID();
+            obj.put("commID", cID);
+        }
+        Integer k = (cID*-1);
+        if (!(cIDs.indexOf(k) > -1))
+            cIDs.add(k);
+        messages.add(obj.toString(0).replaceAll("\n", "") + "\n");
+        return cID;
     }
 
     public synchronized int sendJSON(JSONObject obj) {
