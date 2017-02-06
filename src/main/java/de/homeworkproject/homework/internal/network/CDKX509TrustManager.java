@@ -108,7 +108,7 @@ public class CDKX509TrustManager implements X509TrustManager {
     }
 
     public SSLContext createSSLContext() throws NoSuchAlgorithmException, KeyManagementException {
-        SSLContext ctx = SSLContext.getDefault();
+        SSLContext ctx = SSLContext.getInstance("TLSv1.2");
         ctx.init(null, new TrustManager[]{this}, new SecureRandom());
         return ctx;
     }
