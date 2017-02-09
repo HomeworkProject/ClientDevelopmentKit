@@ -1,6 +1,6 @@
 [logo]:https://github.com/MarkL4YG/Homework_Server_CDK/blob/bleeding/src/main/resources/experimental_logo.png
 [Server]:https://github.com/MarkL4YG/Homework_Server
-[![Build Status](https://travis-ci.org/MarkL4YG/Homework_Server_CDK.svg?branch=bleeding)](https://travis-ci.org/MarkL4YG/Homework_Server_CDK)
+[![Build Status](https://travis-ci.org/HomeworkProject/ClientDevelopmentKit.svg?branch=master)](https://travis-ci.org/HomeworkProject/ClientDevelopmentKit)
 
 # HWServer CDK
 
